@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Unlock, Lock, FormSubtract, FormAdd, User, StatusGoodSmall } from 'grommet-icons';
 import { Accordion, AccordionPanel, Box, Heading, Text, ThemeContext } from 'grommet';
+import backgroundImage from '../../Assets/background.jpg'
 
 const richAccordionTheme = {
     accordion: {
@@ -39,11 +40,19 @@ const RichPanel = ({ children, icon, label }) => {
 const SideBar = ({ users }) => {
     return (
         <Box fill direction="row">
-            <Box basis="medium" border="all">
+            <Box basis="medium" border={{ side:'right', color: 'brand', size: 'medium' }}>
                 <Box
                     flex={true}
                     border="bottom"
-                    background="brand"
+                    background={{
+                        "color": "light-1",
+                        "dark": false,
+                        "opacity": true,
+                        "position": "bottom",
+                        "repeat": "no-repeat",
+                        "size": "cover",
+                        "image": `url(${backgroundImage})`
+                    }}
                     as="header"
                     pad={{ horizontal: 'small' }}
                 >

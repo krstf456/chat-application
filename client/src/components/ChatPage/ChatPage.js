@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react'
 import queryString from 'query-string'
 import io from 'socket.io-client'
-import RoomNameHeader from '../RoomNameHeader/RoomNameHeader'
+import ChatBoxHeader from './ChatBox/ChatBoxHeader'
 import Input from '../Input/Input'
 import DisplayMsg from '../DisplayMsg/DisplayMsg'
-import SideBar from '../SideBar/SideBar'
+import SideBar from './SideBar'
 import { Box, ResponsiveContext} from 'grommet'
 
 let socket
@@ -58,7 +58,7 @@ const ChatPage = ({ location }) => {
                 <SideBar users={users} />
             </Box>
             <Box direction='column' fill='horizontal'>
-                <RoomNameHeader roomName={room} />
+                <ChatBoxHeader roomName={room} />
                 <DisplayMsg messages={messages} name={name} />
                 <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
             </Box>
