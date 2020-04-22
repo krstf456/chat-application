@@ -1,6 +1,6 @@
 import React from 'react'
-import onlineIcon from '../../Icons/onlineIcon.png';
-import closeIcon from '../../Icons/closeIcon.png';
+import onlineIcon from '../../Assets/onlineIcon.png';
+import closeIcon from '../../Assets/closeIcon.png';
 import './RoomNameHeader.css'
 
 const RoomNameHeader = ({roomName}) => {
