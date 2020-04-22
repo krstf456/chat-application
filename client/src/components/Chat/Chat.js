@@ -5,6 +5,7 @@ import './Chat.css'
 import RoomNameHeader from '../RoomNameHeader/RoomNameHeader'
 import Input from '../Input/Input'
 import DisplayMsg from '../DisplayMsg/DisplayMsg'
+import DisplayUsers from '../DisplayUsers/DisplayUsers'
 
 let socket
 const Chat = ({ location }) => {
@@ -12,7 +13,9 @@ const Chat = ({ location }) => {
     const [room, setRoom] = useState('')
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
+    const [users, setUsers] = useState('')
     const ENDPOINT = 'localhost:5000'
+    
     useEffect(() => {
         const { name, room } = queryString.parse(location.search)
         console.log(name, room)
@@ -34,6 +37,9 @@ const Chat = ({ location }) => {
         socket.on('message', message => {
             setMessages(messages => [...messages, message]);
         });
+        socket.on("roomNames", ({ users }) => {
+            setUsers(users);
+        })
     }, [])
 
     const sendMessage = (event) => {
@@ -48,10 +54,10 @@ const Chat = ({ location }) => {
         <div className='outerContainer'>
             <div className="container">
                 <RoomNameHeader roomName={room} />
-                <DisplayMsg messages={messages} name={name}/>
+                <DisplayMsg messages={messages} name={name} />
                 <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
-
             </div>
+            <DisplayUsers users={users} />
         </div>
     )
 }
