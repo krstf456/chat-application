@@ -3,9 +3,9 @@ import queryString from 'query-string'
 import io from 'socket.io-client'
 import ChatBoxHeader from './ChatBox/ChatBoxHeader'
 import Input from '../Input/Input'
-import DisplayMsg from '../DisplayMsg/DisplayMsg'
+
 import SideBar from './SideBar'
-import { Box, ResponsiveContext} from 'grommet'
+import { Box, ResponsiveContext, Footer } from 'grommet'
 
 let socket
 const ChatPage = ({ location }) => {
@@ -52,15 +52,23 @@ const ChatPage = ({ location }) => {
 
     console.log(message, messages)
     return (
- 
+
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
             <Box style={size === 'small' ? { display: 'none' } : { display: 'block' }}>
                 <SideBar users={users} />
             </Box>
             <Box direction='column' fill='horizontal'>
-                <ChatBoxHeader roomName={room} />
-                <DisplayMsg messages={messages} name={name} />
-                <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
+                <Box>
+                    <ChatBoxHeader
+                        roomName={room}
+                        messages={messages}
+                        name={name}
+
+                    />
+                </Box>
+                <Footer>
+                    <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
+                </Footer>
             </Box>
         </Box>
     )
