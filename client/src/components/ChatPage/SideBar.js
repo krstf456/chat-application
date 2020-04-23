@@ -57,7 +57,7 @@ const SideBar = ({ users }) => {
                     pad={{ horizontal: 'small' }}
                 >
                     <Heading level={3}>
-                        <strong>Chatter</strong>
+                        <strong>Chatify</strong>
                     </Heading>
                 </Box>
                 <ThemeContext.Extend value={richAccordionTheme}>

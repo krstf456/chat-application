@@ -14,15 +14,16 @@ const Message = ({ message: { text, user }, name }) => {
 
         isSentByCurrentUser
             ? (
-                <Box alignSelf='end' justify='end'>
-                    <Text>{trimmedName}</Text>
+                <Box justify='end' direction='row'>
+                    <Text>{trimmedName} : </Text>
                     <Box>
                         <Text>{text}</Text>
                     </Box>
                 </Box>
             )
             : (
-                <Box alignContent='end'>
+                <Box alignContent='end'
+                background='blue'>
                     <Text>{text}</Text>
                     <Text>{user}</Text>
                 </Box>
