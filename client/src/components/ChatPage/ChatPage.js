@@ -20,16 +20,17 @@ const ChatPage = ({ location }) => {
     const size = useContext(ResponsiveContext)
     useEffect(() => {
         const { name, room } = queryString.parse(location.search)
-        console.log(name, room)
+        
         socket = io(ENDPOINT)
         setName(name)
         setRoom(room)
-        console.log(socket)
+
         socket.emit('join', { name, room }, () => {
         })
 
         return () => {
-            socket.emit('disconnect')
+            socket.emit('disconnect', () => {
+            })
             socket.off()
         }
     }, [ENDPOINT, location.search])
@@ -41,7 +42,7 @@ const ChatPage = ({ location }) => {
         socket.on("roomNames", ({ users }) => {
             setUsers(users);
         })
-    }, [users, messages])
+    }, [])
 
     const sendMessage = (event) => {
         event.preventDefault()

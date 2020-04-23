@@ -38,7 +38,7 @@ const RichPanel = ({ children, icon, label }) => {
 };
 
 const SideBar = ({ users }) => {
-    const [users, ]
+    // const [users, ]
     return (
         <Box fill direction="row">
             <Box basis="medium" border={{ side:'right', color: 'brand', size: 'medium' }}>
