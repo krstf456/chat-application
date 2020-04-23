@@ -1,21 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import queryString from 'query-string'
 import io from 'socket.io-client'
-import './Chat.css'
-import RoomNameHeader from '../RoomNameHeader/RoomNameHeader'
+import ChatBoxHeader from './ChatBox/ChatBoxHeader'
 import Input from '../Input/Input'
-import DisplayMsg from '../DisplayMsg/DisplayMsg'
-import DisplayUsers from '../DisplayUsers/DisplayUsers'
+
+import SideBar from './SideBar'
+import { Box, ResponsiveContext, Footer } from 'grommet'
 
 let socket
-const Chat = ({ location }) => {
+const ChatPage = ({ location }) => {
+
     const [name, setName] = useState('')
     const [room, setRoom] = useState('')
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
     const [users, setUsers] = useState('')
     const ENDPOINT = 'localhost:5000'
-    
+
+    const size = useContext(ResponsiveContext)
     useEffect(() => {
         const { name, room } = queryString.parse(location.search)
         console.log(name, room)
@@ -24,7 +26,6 @@ const Chat = ({ location }) => {
         setRoom(room)
         console.log(socket)
         socket.emit('join', { name, room }, () => {
-
         })
 
         return () => {
@@ -51,15 +52,26 @@ const Chat = ({ location }) => {
 
     console.log(message, messages)
     return (
-        <div className='outerContainer'>
-            <div className="container">
-                <RoomNameHeader roomName={room} />
-                <DisplayMsg messages={messages} name={name} />
-                <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
-            </div>
-            <DisplayUsers users={users} />
-        </div>
+
+        <Box direction='row' fill='horizontal' height='100vh' gap='none' >
+            <Box style={size === 'small' ? { display: 'none' } : { display: 'block' }}>
+                <SideBar users={users} />
+            </Box>
+            <Box direction='column' fill='horizontal'>
+                <Box>
+                    <ChatBoxHeader
+                        roomName={room}
+                        messages={messages}
+                        name={name}
+
+                    />
+                </Box>
+                <Footer>
+                    <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
+                </Footer>
+            </Box>
+        </Box>
     )
 }
 
-export default Chat
+export default ChatPage

@@ -1,5 +1,5 @@
 import React from 'react'
-import './Message.css'
+import { Box, Text } from "grommet";
 
 const Message = ({ message: { text, user }, name }) => {
     let isSentByCurrentUser = false;
@@ -11,26 +11,22 @@ const Message = ({ message: { text, user }, name }) => {
     }
 
     return (
-        
+
         isSentByCurrentUser
-        ? (
-            <div>
-            <div className="messageContainer justifyEnd">
-                <p className="sentText pr-10">{trimmedName}</p>
-                <div className="messageBox backgroundBlue">
-                    <p className="messageText colorWhite">{text}</p>
-                </div>
-            </div>
-            </div>
-        )
-        : (
-            <div className="messageContainer justifyStart">
-                <div className="messageBox backgroundLight">
-                    <p className="messageText colorDark">{text}</p>
-                </div>
-                <p className="sentText pl-10 ">{user}</p>
-            </div>
-        )
+            ? (
+                <Box alignSelf='end' justify='end'>
+                    <Text>{trimmedName}</Text>
+                    <Box>
+                        <Text>{text}</Text>
+                    </Box>
+                </Box>
+            )
+            : (
+                <Box alignContent='end'>
+                    <Text>{text}</Text>
+                    <Text>{user}</Text>
+                </Box>
+            )
 
     )
 }
