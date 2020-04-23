@@ -1,6 +1,6 @@
 import React from 'react'
 import './Input.css'
-import { Box, Button, FormField, TextInput } from 'grommet'
+import { Box, Button, TextInput } from 'grommet'
 
 
 const Input = ({ message, setMessage, sendMessage }) => {
@@ -17,7 +17,7 @@ const Input = ({ message, setMessage, sendMessage }) => {
             >
                 <TextInput 
                 value={message} 
-                placeholder='Enter you message'
+                placeholder='Enter your message'
                 onChange={(event) => setMessage(event.target.value)}
                 onKeyPress={(event) => event.key === 'Enter' ? sendMessage(event) : null} />
 
