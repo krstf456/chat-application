@@ -56,7 +56,7 @@ const SideBar = ({ users }) => {
                     as="header"
                     pad={{ horizontal: 'small' }}
                 >
-                    <Heading level={3}>
+                    <Heading level={2} alignSelf='center'>
                         <strong>Chatify</strong>
                     </Heading>
                 </Box>

@@ -26,7 +26,7 @@ const Message = ({ message: { text, user }, name }) => {
                     <Text fontSize='1.1em' flex style={{alignItems: 'center', color: '#828282', marginTop: '7px', paddingRight: '10px'}}>{trimmedName}</Text>
                     <Box
                         round='small'
-                          background="linear-gradient(102.77deg, #865ED6 -9.18%, #18BAB9 209.09%)"
+                          background="linear-gradient(102.77deg, #ff817a -9.18%, #A2423D 209.09%)"
                           style={{padding: '5px 20px', display: 'inline-block', maxWidth: '80%'}}
                     >
                         <Text style={{width: '20%',fontSize: '1.1em', wordWrap: 'break-word'}}>{text}</Text>
@@ -42,7 +42,8 @@ const Message = ({ message: { text, user }, name }) => {
                 style={{ padding: '0 5%', marginTop: '3px'}}
                 alignSelf='center'>
                     <Box round='small'
-                          background="light-2"
+                        background="linear-gradient(102.77deg, #F2F2F2 -9.18%, #999999 209.09%)"
+
                           style={{padding: '6px 20px', display: 'inline-block', maxWidth: '80%'}}>
 
                     <Text  fontSize='1.1em' flex style={{alignItems: 'center', color: '#828282', marginTop: '3px', paddingRight: '10px'}}>{text}</Text>
