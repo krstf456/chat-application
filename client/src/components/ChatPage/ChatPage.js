@@ -41,7 +41,7 @@ const ChatPage = ({ location }) => {
         socket.on("roomNames", ({ users }) => {
             setUsers(users);
         })
-    }, [])
+    }, [users, messages])
 
     const sendMessage = (event) => {
         event.preventDefault()

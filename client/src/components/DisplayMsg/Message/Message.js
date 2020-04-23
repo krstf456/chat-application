@@ -11,20 +11,21 @@ const Message = ({ message: { text, user }, name }) => {
     }
 
     return (
-
         isSentByCurrentUser
             ? (
-                <Box alignSelf='end' justify='end'>
-                    <Text>{trimmedName}</Text>
-                    <Box>
-                        <Text>{text}</Text>
-                    </Box>
+                <Box pad='small'>
+                <Box alignSelf='end' pad='small' border={{ color: 'brand', size: 'small' }} background={{ color: 'light-6', opacity: true }} width='small' round>
+                    <Text >{text}</Text>
+                    <Text alignSelf='end' color='brand'>{trimmedName}</Text>
                 </Box>
+            </Box>
             )
             : (
-                <Box alignContent='end'>
-                    <Text>{text}</Text>
-                    <Text>{user}</Text>
+                <Box pad='small'>
+                    <Box alignSelf='start' pad='small' border={{ color: 'brand', size: 'small' }} background={{ color: 'brand', opacity: true }}  width='small' round>
+                        <Text >{text}</Text>
+                        <Text alignSelf='end' color='brand'>{user}</Text>
+                    </Box>
                 </Box>
             )
 
