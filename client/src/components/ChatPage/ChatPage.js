@@ -27,12 +27,6 @@ const ChatPage = ({ location }) => {
 
         socket.emit('join', { name, room }, () => {
         })
-
-        return () => {
-            socket.emit('disconnect', () => {
-            })
-            socket.off()
-        }
     }, [ENDPOINT, location.search])
 
     useEffect(() => {

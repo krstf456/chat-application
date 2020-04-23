@@ -13,7 +13,7 @@ const DisplayMsg = ({ messages, name }) => {
   useEffect(scrollToBottom, [messages]);
 
   return (
-    <Box height='medium' gap='none'>
+    <Box height='75vh' gap='none'>
       {messages.map((message, i) => <div key={i}><Message message={message} name={name} /></div>)}
       <div ref={messagesEndRef} />
     </Box>
