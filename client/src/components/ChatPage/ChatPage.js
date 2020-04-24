@@ -67,7 +67,8 @@ const ChatPage = ({ location }) => {
 
                     />
                 </Box>
-                <Footer>
+                <Footer justify='center'
+                alignSelf='center'>
                     <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
                 </Footer>
             </Box>
