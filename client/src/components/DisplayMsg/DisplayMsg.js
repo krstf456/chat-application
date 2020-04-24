@@ -8,7 +8,10 @@ import { Box, Text } from "grommet";
 
 const DisplayMsg = ({ messages, name }) => (
   <>
-    {messages.map((message, i) => <div key={i}><Message message={message} name={name} /></div>)}
+    <Box>
+
+      {messages.map((message, i) => <div key={i}><Message message={message} name={name} /></div>)}
+    </Box>
   </>
 );
 
