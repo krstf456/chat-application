@@ -15,6 +15,7 @@ const richAccordionTheme = {
 const RichPanel = ({ children, icon, label }) => {
     const [hovering, setHovering] = useState(false);
 
+
     const renderPanelTitle = () => (
         <Box direction="row" align="center" gap="small" pad={{ horizontal: 'small' }}>
             {icon}
@@ -37,8 +38,8 @@ const RichPanel = ({ children, icon, label }) => {
     );
 };
 
-const SideBar = ({ users, userRooms }) => {
-    // const [users, ]
+const SideBar = ({ users, userRooms, allRooms }) => {
+
     return (
         <Box fill direction="row">
             <Box basis="medium" border={{ side: 'right', color: 'brand', size: 'medium' }}>
@@ -76,22 +77,23 @@ const SideBar = ({ users, userRooms }) => {
                             <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
                                 <Box gap="xsmall">
                                     <Text color="dark-3">
-                                    {/* {
-                                        userRooms
-                                            ? (
-                                                <Box>
-                                                    {
-                                                        userRooms.map(({ room }) => (
-                                                            <Text key={room}>
-                                                                <StatusGoodSmall color='status-ok' size='small' />
-                                                                <strong> {room}</strong>
-                                                            </Text>
-                                                        ))
-                                                    }
-                                                </Box>
-                                            )
-                                            : null
-                                    } */}
+                                        {
+                                            allRooms
+                                                ? (
+                                                    <Box>
+
+                                                        {
+                                                            allRooms.map((room) => (
+                                                                <Text key={room}>
+                                                                    <StatusGoodSmall color='status-ok' size='small' />
+                                                                    <strong> {room}</strong>
+                                                                </Text>
+                                                            ))
+                                                        }
+                                                    </Box>
+                                                )
+                                                : null
+                                        }
                                     </Text>
                                 </Box>
                             </Box>

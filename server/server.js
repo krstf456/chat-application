@@ -8,24 +8,44 @@ const router = require('./router')
 const app = express()
 const server = http.createServer(app)
 const io = socketio(server)
-const { addUser, removeUser, getUser, getUsersInRoom, getRooms, addRoom} = require('./users')
+io.eio.pingTimeout = 120000; // 2 minutes
+// io.eio.pingInterval = 5000;  // 5 seconds
+
+const { addUser, removeUser, getUser, getUsersInRoom, getRoomsWithUser, addRoom, removeRoom, sessions } = require('./users')
 
 io.on('connection', (socket) => {
     console.log('new connection established')
 
+
     socket.on('join', ({ name, room }, callback) => {
+        
         const { error, user } = addUser({ id: socket.id, name, room })
         if (error) return callback(error)
-        
+
         socket.emit('message', { user: 'admin', text: `Hey ${user.name}, welcome to ${user.room}` })
         socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined` })
         socket.join(user.room)
+        rooms = addRoom(user.room)
+        sessions.forEach(element => {
+            io.sockets.connected[element.id].emit('allRooms', rooms)
+        });
+        
+        roomsWithUser = getRoomsWithUser(user.name)
+        sessions.forEach(element => {
+            if (element.name === user.name){
+                io.sockets.connected[element.id].emit('userRooms', { room: user.room, userRooms: roomsWithUser})
+            }
+        });
+        
         io.to(user.room).emit('userNames', { room: user.room, users: getUsersInRoom(user.room) })
-        io.to(user.room).emit('userRooms', { room: user.room, userRooms: getRooms(user.name) })
-        // io.to(user.room).emit('allRooms', addRoom(user.room))
-        // console.log(getRooms(user.name))
         callback()
     })
+
+    // socket.on('getRooms', (callback)=>{
+    //     socket.emit('allRooms', io.socket.adapter.rooms);
+    //     console.log(io.socket.adapter.rooms)
+    //     callback()
+    // });
 
     socket.on('sendMessage', (message, callback) => {
         const user = getUser(socket.id)
@@ -37,11 +57,14 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log(`User has left`)
         const user = removeUser(socket.id);
-       
+
         if (user) {
             console.log(user.name, 'has left')
             socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has left` })
             io.to(user.room).emit('userNames', { room: user.room, users: getUsersInRoom(user.room) });
+            //io.to(user.room).emit('userRooms', { room: user.room, userRooms: getRooms(user.name) })
+            //io.to(user.room).emit('allRooms', addRoom(user.room))
+            
         }
     })
 
