@@ -15,6 +15,7 @@ const ChatPage = ({ location }) => {
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
     const [users, setUsers] = useState('')
+    const [roomNames, setRoomNames] = useState('')
     const ENDPOINT = 'localhost:5000'
 
     const size = useContext(ResponsiveContext)
@@ -33,9 +34,12 @@ const ChatPage = ({ location }) => {
         socket.on('message', message => {
             setMessages(messages => [...messages, message]);
         });
-        socket.on("roomNames", ({ users }) => {
+        socket.on("userNames", ({ users }) => {
             setUsers(users);
         })
+        // socket.on("roomNames", ({ roomNames }) => {
+        //     setRoomNames(roomNames);
+        // })
     }, [])
 
     const sendMessage = (event) => {
