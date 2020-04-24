@@ -11,11 +11,12 @@ let socket
 const ChatPage = ({ location }) => {
 
     const [name, setName] = useState('')
-    const [room, setRoom] = useState('')
+    const [room, setRoom] = useState([])
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
     const [users, setUsers] = useState('')
-    const [roomNames, setRoomNames] = useState('')
+    const [userRooms, setUserRooms] = useState('')
+    // const [allRooms, setAllRooms] = useState([])
     const ENDPOINT = 'localhost:5000'
 
     const size = useContext(ResponsiveContext)
@@ -37,8 +38,12 @@ const ChatPage = ({ location }) => {
         socket.on("userNames", ({ users }) => {
             setUsers(users);
         })
-        // socket.on("roomNames", ({ roomNames }) => {
-        //     setRoomNames(roomNames);
+        socket.on("userRooms", ({ userRooms }) => {
+            setUserRooms(userRooms);
+        })
+        // socket.on("allRooms", allRooms => {
+        //     setAllRooms(allRooms);
+        //     console.log(allRooms, 'test')
         // })
     }, [])
 
@@ -55,7 +60,7 @@ const ChatPage = ({ location }) => {
 
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
             <Box style={size === 'small' ? { display: 'none' } : { display: 'block' }}>
-                <SideBar users={users} />
+                <SideBar users={users} userRooms={userRooms}/>
             </Box>
             <Box direction='column' fill='horizontal'>
                 <Box>

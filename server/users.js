@@ -6,18 +6,6 @@ const addUser = ({ id, name, room }) => {
     name = name.trim().toLowerCase()
     room = room.trim().toLowerCase()
 
-    const existingUser = users.find((user) => user.name === name)
-    
-    // if (!existingUser) {
-    //     user.userRooms.push(room)
-    //     users.push(user)
-    // }
-    // else {
-    //     const existingRoom = existingUser.rooms.find((element) => element === room)
-    //     if (!existingRoom) {
-    //         existingUser.rooms.push(room)
-    //     }
-    // }
     const user = { id, name, room }
     users.push(user)
     console.log(users, 'test 1')
@@ -29,14 +17,15 @@ const addRoom = (room) => {
     if(!existingRooms){
         rooms.push[room]
     }
+    return rooms
 }
+
 const removeUser = (id) => {
     const index = users.findIndex((user) => user.id === id)
     if (index !== -1) {
         const userRemoved = users.splice(index, 1)[0]
         return userRemoved
     }
-
 }
 
 const getUser = (id) => users.find((user) => user.id === id)
