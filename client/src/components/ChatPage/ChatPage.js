@@ -46,6 +46,7 @@ const ChatPage = ({ location }) => {
     }
 
     console.log(message, messages)
+    console.log(size)
     return (
 
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >

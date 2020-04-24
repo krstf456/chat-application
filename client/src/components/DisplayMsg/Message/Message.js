@@ -17,7 +17,6 @@ const Message = ({ message: { text, user }, name }) => {
             ? (
                 <Box 
                 direction='row'
-                flex
                 width='100%'
                 justify='end'
                 style={{ padding: '0 5%', marginTop: '3px'}}
