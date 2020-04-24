@@ -8,7 +8,7 @@ const router = require('./router')
 const app = express()
 const server = http.createServer(app)
 const io = socketio(server)
-const { addUser, removeUser, getUser, getUsersInRoom } = require('./users')
+const { addUser, removeUser, getUser, getUsersInRoom, getRooms, addRoom} = require('./users')
 
 io.on('connection', (socket) => {
     console.log('new connection established')
@@ -23,7 +23,9 @@ io.on('connection', (socket) => {
         socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined` })
         socket.join(user.room)
         io.to(user.room).emit('userNames', { room: user.room, users: getUsersInRoom(user.room) })
-        
+        io.to(user.room).emit('userRooms', { room: user.room, userRooms: getRooms(user.name) })
+        // io.to(user.room).emit('allRooms', addRoom(user.room))
+        // console.log(getRooms(user.name))
         callback()
     })
 
@@ -33,17 +35,11 @@ io.on('connection', (socket) => {
         callback()
     })
 
-    // io.on('connection', (socket) => {
-    //     socket.join('room 237', () => {
-    //       let rooms = Object.keys(socket.rooms);
-    //       console.log(rooms); // [ <socket.id>, 'room 237' ]
-    //     });
-    //   });
-
     // when the client disconnects, we broadcast it to others
     socket.on('disconnect', () => {
         console.log(`User has left`)
         const user = removeUser(socket.id);
+       
         if (user) {
             console.log(user.name, 'has left')
             socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has left` })
