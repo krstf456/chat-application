@@ -1,10 +1,10 @@
 const rooms = []
 
-const addRoom = ({ id, name, room}) => {
+const addRoom = ({ id, name, room, password}) => {
     name = name.trim().toLowerCase()
     room = room.trim().toLowerCase()
 
-    const room = { id, name, room }
+    const room = { id, name, room, password }
 
     rooms.push(room)
 
