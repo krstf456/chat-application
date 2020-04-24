@@ -31,16 +31,9 @@ const Message = ({ message: { text, user }, name }) => {
                         <Text style={{width: '20%',fontSize: '1.1em', wordWrap: 'break-word'}}>{text}</Text>
                     </Box>
                 </Box>
-            </Box>
+          
             )
             : (
-<<<<<<< HEAD
-                <Box pad='small'>
-                    <Box alignSelf='start' pad='small' border={{ color: 'brand', size: 'small' }} background={{ color: 'brand', opacity: true }}  width='small' round>
-                        <Text >{text}</Text>
-                        <Text alignSelf='end' color='brand'>{user}</Text>
-                    </Box>
-=======
                 <Box
                 direction='row'
                 background='light'
@@ -56,7 +49,6 @@ const Message = ({ message: { text, user }, name }) => {
                     <Text  fontSize='1.1em' flex style={{alignItems: 'center', color: '#828282', marginTop: '3px', paddingRight: '10px'}}>{text}</Text>
                     </Box>
                     <Text style={{width: '20%',fontSize: '1.1em', marginTop: '7px', paddingLeft: '10px'}}>{user}</Text>
->>>>>>> 3c69a0e6ee6d4abf214f7a514ed989402d76f760
                 </Box>
             )
 
