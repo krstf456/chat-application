@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Unlock, Lock, FormSubtract, FormAdd, User, StatusGoodSmall } from 'grommet-icons';
+import { Unlock, Lock, FormSubtract, FormAdd, Group, StatusGoodSmall, ChatOption, Chat} from 'grommet-icons';
 import { Accordion, AccordionPanel, Box, Heading, Text, ThemeContext } from 'grommet';
 import backgroundImage from '../../Assets/background.jpg'
 
@@ -98,7 +98,7 @@ const SideBar = ({ users, userRooms, allRooms }) => {
                                 </Box>
                             </Box>
                         </RichPanel>
-                        <RichPanel icon={<Unlock color="brand" />} label="Your Rooms">
+                        <RichPanel icon={<ChatOption color="brand" />} label="Your Rooms">
                             <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
                                 <Text color="dark-3">
                                     {
@@ -120,7 +120,7 @@ const SideBar = ({ users, userRooms, allRooms }) => {
                                 </Text>
                             </Box>
                         </RichPanel>
-                        <RichPanel icon={<User color="brand" />} label="Members">
+                        <RichPanel icon={<Group color="brand" />} label="Members">
                             <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
                                 {
                                     users
