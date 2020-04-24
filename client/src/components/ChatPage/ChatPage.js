@@ -20,18 +20,13 @@ const ChatPage = ({ location }) => {
     const size = useContext(ResponsiveContext)
     useEffect(() => {
         const { name, room } = queryString.parse(location.search)
-        console.log(name, room)
+        
         socket = io(ENDPOINT)
         setName(name)
         setRoom(room)
-        console.log(socket)
+
         socket.emit('join', { name, room }, () => {
         })
-
-        return () => {
-            socket.emit('disconnect')
-            socket.off()
-        }
     }, [ENDPOINT, location.search])
 
     useEffect(() => {
@@ -51,6 +46,7 @@ const ChatPage = ({ location }) => {
     }
 
     console.log(message, messages)
+    console.log(size)
     return (
 
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
