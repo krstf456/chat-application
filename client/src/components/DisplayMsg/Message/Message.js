@@ -13,12 +13,10 @@ const Message = ({ message: { text, user }, name }) => {
     }
 
     return (
-
         isSentByCurrentUser
             ? (
                 <Box 
                 direction='row'
-                flex
                 width='100%'
                 justify='end'
                 style={{ padding: '0 5%', marginTop: '3px'}}
@@ -32,6 +30,7 @@ const Message = ({ message: { text, user }, name }) => {
                         <Text style={{width: '20%',fontSize: '1.1em', wordWrap: 'break-word'}}>{text}</Text>
                     </Box>
                 </Box>
+          
             )
             : (
                 <Box
