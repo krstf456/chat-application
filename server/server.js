@@ -11,28 +11,27 @@ const io = socketio(server)
 io.eio.pingTimeout = 120000; // 2 minutes
 // io.eio.pingInterval = 5000;  // 5 seconds
 
-const {addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, addRoom, removeRoom, sessions } = require('./sessions')
+const { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, addRoom, sessions } = require('./sessions')
 
-const updateSessions = (user) => {
-    roomsWithUser = getRoomsWithUser(user.name)
+const updateSessions = (session) => {
+    roomsWithUser = getRoomsWithUser(session.name)
     sessions.forEach(element => {
-        if (element.name === user.name) {
-            io.sockets.connected[element.id].emit('userRooms', { room: user.room, userRooms: roomsWithUser })
+        if (element.name === session.name) {
+            io.sockets.connected[element.id].emit('userRooms', { room: session.room, userRooms: roomsWithUser })
         }
     });
- }
+}
 
 
 io.on('connection', (socket) => {
     console.log('new connection established')
-
 
     socket.on('join', ({ name, room }, callback) => {
 
         const { error, session } = addSession({ id: socket.id, name, room })
         if (error) return callback(error)
 
-        socket.emit('message', {session: 'admin', text: `Hey ${session.name}, welcome to ${session.room}` })
+        socket.emit('message', { session: 'admin', text: `Hey ${session.name}, welcome to ${session.room}` })
         socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has joined` })
         socket.join(session.room)
         rooms = addRoom(session.room)
@@ -55,15 +54,16 @@ io.on('connection', (socket) => {
     // when the client disconnects, we broadcast it to others
     socket.on('disconnect', () => {
         console.log(`User has left`)
-        const session = removeSession(socket.id);
-
+        const [session, rooms] = removeSession(socket.id);
+        console.log(session, rooms, 'cp-6')
         if (session) {
             console.log(session.name, 'has left')
             socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has left` })
             io.to(session.room).emit('userNames', { room: session.room, users: getUsersInRoom(session.room) });
-
+            sessions.forEach(element => {
+                io.sockets.connected[element.id].emit('allRooms', rooms)
+            });
             updateSessions(session)
-
         }
     })
 

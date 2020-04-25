@@ -20,34 +20,34 @@ const addRoom = (room) => {
 
 const removeSession = (id) => {
     const index = sessions.findIndex((session) => session.id === id)
-
+    const session = sessions.find((session) => session.id === id)
+    console.log(session.room, 'cp-1')
     if (index !== -1) {
         const sessionsRemain = sessions.splice(index, 1)[0]
-        return sessionsRemain
+        const roomsRemain = removeRoom(session.room)
+        return [sessionsRemain, roomsRemain]
     }
-    removeRoom(id)
+
 }
 
-const removeRoom = (id) => {
-    const userRoom = sessions.find((user) => user.id === id)
-    // console.log(userRoom, 'userRoom')
-    //const usersList = getUsersInRoom(userRoom.room)
-    // if (usersList === null ) {
-    //     const index = rooms.indexOf(userRoom.room);
-    //     if (index > -1) {
-    //        const roomsRemain =  rooms.splice(index, 1)[0]
-    //        return roomsRemain
-    //     }
-    // }
-
-
+const removeRoom = (room) => {
+    const checkIfEmpty = sessions.find((session) => session.room === room)
+    console.log(checkIfEmpty, 'cp-2')
+    if (checkIfEmpty === undefined) {
+        const index = rooms.indexOf(room);
+        console.log(rooms, index, 'cp-4')
+        if (index > -1) {
+            rooms.splice(index, 1)
+            console.log(rooms, 'cp-3')
+        }
+    }
+    return rooms
 }
 
 const getSession = (id) => sessions.find((session) => session.id === id)
 
-
-
 const getUsersInRoom = (room) => sessions.filter((session) => session.room === room)
+
 const getRoomsWithUser = (name) => sessions.filter((session) => session.name === name)
 
-module.exports = { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, addRoom, removeRoom, sessions}
+module.exports = { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, addRoom, sessions }
