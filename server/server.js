@@ -37,58 +37,34 @@ app.get('/rooms', (req, res) => {
 // Register a new user
 app.post('/rooms', async (req, res) => {
     const roomParam = roomParameters.find(roomParam => roomParam.roomName === req.body.roomName)
-    if (roomParam) {
+    if (roomParam) { //room with same name exists
         if (roomParam.status === req.body.status) {
             if (roomParam.status === false) {
-                return res.send('Enter room success')
+                return res.json('Enter room success')
             }
-            else if (roomParam.status === true) {
+            else {
                 if (!await bcrypt.compare(req.body.password, roomParam.password)) {
-                    return res.status(401).json('Wrong room name or password')
+                    return res.status(401).json({ error: 'Wrong room name or password' })
+                }else{
+                    return res.json('Enter room success')
                 }
-
-                return res.send('Enter room success')
             }
         }
-        return res.status(401).json('Room exists with different locked status')
-    }
-
-    if (req.body.password === undefined) {
-        roomParameters.push({
+        return res.status(401).json({ error: 'Room exists with different locked status' })
+    } else {//room is new
+        newRoom = {
             roomName: req.body.roomName,
-            status: req.body.status,
-        })
+            status: req.body.status
+        }
+        if (req.body.password) {
+            newRoom.password = await bcrypt.hash(req.body.password, 10)
+        }
+        roomParameters.push(newRoom)
+        return res.json('Enter room success')
     }
+}
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 10)
-    roomParameters.push({
-        roomName: req.body.roomName,
-        password: hashedPassword,
-        status: req.body.status,
-    })
-    res.status(201).json(hashedPassword)
-})
-
-// Attemp to login a user
-app.post('/login', async (req, res) => {
-    // Check if username & password is correct
-    const user = users.find(user => user.name === req.body.name)
-    if (!user || !await bcrypt.compare(req.body.password, user.password)) {
-        return res.status(401).json('Wrong roomname or password')
-    }
-
-    // Check if user already is logged in
-    if (req.session.username) {
-        return res.json('You are already logged in')
-    }
-
-    // Create session
-    req.session.username = user.name
-    req.session.role = 'admin'
-
-    // Send a response
-    res.send('Succesful login')
-})
+)
 
 // Logout
 app.delete('/logout', (req, res) => {
