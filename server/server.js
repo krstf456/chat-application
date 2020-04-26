@@ -11,6 +11,124 @@ const io = socketio(server)
 io.eio.pingTimeout = 120000; // 2 minutes
 // io.eio.pingInterval = 5000;  // 5 seconds
 
+const cors = require('cors');
+app.use(cors());
+
+const bcrypt = require('bcrypt')
+const cookieSession = require('cookie-session')
+
+const roomParameters = []
+
+// Parse request body as json
+app.use(express.json())
+
+app.use(cookieSession({
+    secret: 'aVeryS3cr3tK3y',
+    maxAge: 1000 * 10, // 10s
+    sameSite: 'strict',
+    httpOnly: true,
+    secure: false,
+}))
+
+app.get('/rooms', (req, res) => {
+    res.json(roomParameters)
+})
+
+// Register a new user
+app.post('/rooms', async (req, res) => {
+    const roomParam = roomParameters.find(roomParam => roomParam.roomName === req.body.roomName)
+    if (roomParam) {
+        if (roomParam.status === req.body.status) {
+            if (roomParam.status === false) {
+                return res.send('Enter room success')
+            }
+            else if (roomParam.status === true) {
+                if (!await bcrypt.compare(req.body.password, roomParam.password)) {
+                    return res.status(401).json('Wrong room name or password')
+                }
+
+                return res.send('Enter room success')
+            }
+        }
+        return res.status(401).json('Room exists with different locked status')
+    }
+
+    if (req.body.password === undefined) {
+        roomParameters.push({
+            roomName: req.body.roomName,
+            status: req.body.status,
+        })
+    }
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    roomParameters.push({
+        roomName: req.body.roomName,
+        password: hashedPassword,
+        status: req.body.status,
+    })
+    res.status(201).json(hashedPassword)
+})
+
+// Attemp to login a user
+app.post('/login', async (req, res) => {
+    // Check if username & password is correct
+    const user = users.find(user => user.name === req.body.name)
+    if (!user || !await bcrypt.compare(req.body.password, user.password)) {
+        return res.status(401).json('Wrong roomname or password')
+    }
+
+    // Check if user already is logged in
+    if (req.session.username) {
+        return res.json('You are already logged in')
+    }
+
+    // Create session
+    req.session.username = user.name
+    req.session.role = 'admin'
+
+    // Send a response
+    res.send('Succesful login')
+})
+
+// Logout
+app.delete('/logout', (req, res) => {
+    // Check if user already is logged out
+    if (!req.session.username) {
+        return res.status(400).json('You are already logged out')
+    }
+
+    // Remove the session and send a response
+    req.session = null
+    res.send('You are now logged out!')
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, addRoom, sessions } = require('./sessions')
 
 const updateSessions = (session) => {
