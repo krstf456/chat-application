@@ -1,15 +1,14 @@
 import React from 'react';
 import { Box, Text } from "grommet";
-import styled from 'styled-components';
 
-
-const Message = ({ message: { text, user }, name }) => {
+const Message = ({ message: { text, session }, name }) => {
     let isSentByCurrentUser = false;
 
     const trimmedName = name.trim().toLowerCase();
-
-    if (user === trimmedName) {
+    console.log(session, name)
+    if (session === trimmedName) {
         isSentByCurrentUser = true;
+       
     }
 
     return (
@@ -47,7 +46,7 @@ const Message = ({ message: { text, user }, name }) => {
 
                     <Text  fontSize='1.1em' flex style={{alignItems: 'center', color: '#828282', marginTop: '3px', paddingRight: '10px'}}>{text}</Text>
                     </Box>
-                    <Text style={{width: '20%',fontSize: '1.1em', marginTop: '7px', paddingLeft: '10px'}}>{user}</Text>
+                    <Text style={{width: '20%',fontSize: '1.1em', marginTop: '7px', paddingLeft: '10px'}}>{session}</Text>
                 </Box>
             )
 

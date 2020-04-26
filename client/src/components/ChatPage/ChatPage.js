@@ -3,15 +3,13 @@ import queryString from 'query-string'
 import io from 'socket.io-client'
 import ChatBoxHeader from './ChatBox/ChatBoxHeader'
 import Input from '../Input/Input'
-
 import SideBar from './SideBar'
 import { Box, ResponsiveContext, Footer } from 'grommet'
 
 let socket
-const ChatPage = ({ location }) => {
-
-    const [name, setName] = useState('')
-    const [room, setRoom] = useState([])
+const ChatPage = ({ user, roomName }) => {
+    const [name, setName] = useState(user)
+    const [room, setRoom] = useState(roomName)
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
     const [users, setUsers] = useState('')
@@ -21,19 +19,19 @@ const ChatPage = ({ location }) => {
 
     const size = useContext(ResponsiveContext)
     useEffect(() => {
-        const { name, room } = queryString.parse(location.search)
-
+        // const { name, room } = {user, roomName}
         socket = io(ENDPOINT)
-        setName(name)
-        setRoom(room)
-
+        // setName(user)
+        // setRoom(roomName)
+        console.log(name,room)
         socket.emit('join', { name, room }, () => {
         })
-    }, [ENDPOINT, location.search])
+    }, [])
 
     useEffect(() => {
         socket.on('message', message => {
             setMessages(messages => [...messages, message]);
+            
         });
         socket.on("userNames", ({ users }) => {
             setUsers(users);
@@ -47,17 +45,15 @@ const ChatPage = ({ location }) => {
         })
     }, [])
 
-
-
     const sendMessage = (event) => {
         event.preventDefault()
         if (message) {
             socket.emit('sendMessage', message, () => setMessage(''))
         }
     }
+    console.log(messages)
 
     return (
-
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
             <Box style={size === 'small' ? { display: 'none' } : { display: 'block' }}>
                 <SideBar users={users} userRooms={userRooms} allRooms={allRooms} />

@@ -4,13 +4,7 @@ import { useState } from 'react'
 import backgroundImage from '../../Assets/background.jpg'
 import { Box, Button, Form, FormField, TextInput, CheckBox } from "grommet";
 
-const HomePage = () => {
-    const defaultValue = {
-        name: '',
-        room: ''
-    };
-
-    const [value, setValue] = useState(defaultValue);
+const LoginPage = ({ submitForm }) => {
     const [locked, setLock] = useState();
     return (
         <Box align='center' justify='center' height='100vh'
@@ -22,24 +16,18 @@ const HomePage = () => {
                 "repeat": "no-repeat",
                 "size": "cover",
                 "image": `url(${backgroundImage})`
-            }} >
+            }}>
             <Box border={{ color: 'brand', size: 'medium' }} round={true} pad="medium"
                 background={{
                     "color": "light-6",
                     "opacity": true,
                 }} >
-                <Form
-                    value={value}
-                    onChange={nextValue => {
-                        console.log("Change", nextValue);
-                        setValue(nextValue);
-                    }}
-                >
+                <Form onSubmit={({ value }) => {submitForm(value)}}>
                     <Box>
-                        <FormField label="Name" name="name">
+                        <FormField label="Name" name="name" required>
                             <TextInput name="name" />
                         </FormField>
-                        <FormField label="Room Name" name="room">
+                        <FormField label="Room Name" name="room" required>
                             <TextInput name="room" />
                         </FormField>
                         <FormField name="haveAlias">
@@ -57,9 +45,9 @@ const HomePage = () => {
                         )}
                     </Box>
                     <Box direction="row" gap="medium">
-                        <Link onClick={(event) => (!value.name || !value.room) ? event.preventDefault() : null} to={`/chat?name=${value.name}&room=${value.room}`}>
-                            <Button type="submit" primary label="Sign In" />
-                        </Link>
+
+                        <Button type="submit" primary label="Sign In" />
+
                     </Box>
                 </Form>
             </Box>
@@ -67,4 +55,4 @@ const HomePage = () => {
     )
 }
 
-export default HomePage
+export default LoginPage

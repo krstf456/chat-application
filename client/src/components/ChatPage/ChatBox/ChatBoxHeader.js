@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom'
 import DisplayMsg from '../../DisplayMsg/DisplayMsg'
 import Input from '../../Input/Input'
 
-const ChatBoxHeader = ({ roomName, messages, name, message, setMessage, sendMessage }) => {
+const ChatBoxHeader = ({ roomName, messages, name}) => {
+    // console.log(name)
     return (
         <Box>
             <Header background="brand" justify='around' >

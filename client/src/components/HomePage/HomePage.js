@@ -1,69 +1,38 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { useState } from 'react'
-import backgroundImage from '../../Assets/background.jpg'
-import { Box, Button, Form, FormField, TextInput, CheckBox } from "grommet";
+import LoginPage from './LoginPage'
+import ChatPage from '../ChatPage/ChatPage'
 
 const HomePage = () => {
-    const defaultValue = {
-        name: '',
-        room: ''
-    };
 
-    const [value, setValue] = useState(defaultValue);
-    const [locked, setLock] = useState();
+    const [name, setName] = useState('')
+    const [room, setRoom] = useState('')
+    const [chat, setChat] = useState(false)
+
+    const submitForm = (value) => {
+        console.log(value)
+        if(value.haveAlias){
+
+        }
+        else {
+            setName(value.name)
+            setRoom(value.room)
+            setChat(true)
+        }
+
+    }
+
+    const displayPage = () => {
+        let displayPage = <LoginPage submitForm={submitForm} />
+        if (chat) {
+
+            displayPage = <ChatPage user={name} roomName={room} />
+        }
+        return displayPage
+    }
+
     return (
-        <Box align='center' justify='center' height='100vh'
-            background={{
-                "color": "light-1",
-                "dark": false,
-                "opacity": true,
-                "position": "bottom",
-                "repeat": "no-repeat",
-                "size": "cover",
-                "image": `url(${backgroundImage})`
-            }} >
-            <Box border={{ color: 'brand', size: 'medium' }} round={true} pad="medium"
-                background={{
-                    "color": "light-6",
-                    "opacity": true,
-                }} >
-                <Form
-                    value={value}
-                    onChange={nextValue => {
-                        console.log("Change", nextValue);
-                        setValue(nextValue);
-                    }}
-                >
-                    <Box>
-                        <FormField label="Name" name="name">
-                            <TextInput name="name" />
-                        </FormField>
-                        <FormField label="Room Name" name="room">
-                            <TextInput name="room" />
-                        </FormField>
-                        <FormField name="haveAlias">
-                            <CheckBox
-                                name="haveAlias"
-                                label="Locked?"
-                                checked={locked}
-                                onChange={() => setLock(!locked)}
-                            />
-                        </FormField>
-                        {locked && (
-                            <FormField label="Password" name="password" required>
-                                <TextInput name="password" />
-                            </FormField>
-                        )}
-                    </Box>
-                    <Box direction="row" gap="medium">
-                        <Link onClick={(event) => (!value.name || !value.room) ? event.preventDefault() : null} to={`/chat?name=${value.name}&room=${value.room}`}>
-                            <Button type="submit" primary label="Sign In" />
-                        </Link>
-                    </Box>
-                </Form>
-            </Box>
-        </Box>
+        <>{displayPage()}</>
     )
 }
 
