@@ -8,6 +8,8 @@ const router = require('./router')
 const app = express()
 const server = http.createServer(app)
 const io = socketio(server)
+
+
 io.eio.pingTimeout = 120000; // 2 minutes
 // io.eio.pingInterval = 5000;  // 5 seconds
 
@@ -40,13 +42,13 @@ app.post('/rooms', async (req, res) => {
     if (roomParam) { //room with same name exists
         if (roomParam.status === req.body.status) {
             if (roomParam.status === false) {
-                return res.json('Enter room success')
+                return res.status(200).json('Enter room success')
             }
             else {
                 if (!await bcrypt.compare(req.body.password, roomParam.password)) {
                     return res.status(401).json({ error: 'Wrong room name or password' })
-                }else{
-                    return res.json('Enter room success')
+                } else {
+                    return res.status(200).json('Enter room success')
                 }
             }
         }
@@ -60,7 +62,7 @@ app.post('/rooms', async (req, res) => {
             newRoom.password = await bcrypt.hash(req.body.password, 10)
         }
         roomParameters.push(newRoom)
-        return res.json('Enter room success')
+        return res.status(200).json('Enter room success')
     }
 }
 
@@ -79,6 +81,7 @@ app.delete('/logout', (req, res) => {
 })
 
 
+module.exports = { roomParameters }
 
 
 
@@ -105,7 +108,7 @@ app.delete('/logout', (req, res) => {
 
 
 
-const { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, addRoom, sessions } = require('./sessions')
+const { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, sessions } = require('./sessions')
 
 const updateSessions = (session) => {
     roomsWithUser = getRoomsWithUser(session.name)
@@ -128,7 +131,9 @@ io.on('connection', (socket) => {
         socket.emit('message', { session: 'admin', text: `Hey ${session.name}, welcome to ${session.room}` })
         socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has joined` })
         socket.join(session.room)
-        rooms = addRoom(session.room)
+        const rooms = roomParameters.map(element => element.roomName)
+
+        console.log(rooms, 'allrooms')
         sessions.forEach(element => {
             io.sockets.connected[element.id].emit('allRooms', rooms)
         });
@@ -148,8 +153,9 @@ io.on('connection', (socket) => {
     // when the client disconnects, we broadcast it to others
     socket.on('disconnect', () => {
         console.log(`User has left`)
-        const [session, rooms] = removeSession(socket.id);
-        console.log(session, rooms, 'cp-6')
+        const [session, roomParameters] = removeSession(socket.id);
+        console.log(session, roomParameters, 'cp-6')
+        const rooms = roomParameters.map(element => element.roomName)
         if (session) {
             console.log(session.name, 'has left')
             socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has left` })

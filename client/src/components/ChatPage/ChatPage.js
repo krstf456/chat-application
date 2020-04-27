@@ -41,7 +41,7 @@ const ChatPage = ({ user, roomName }) => {
         })
         socket.on("allRooms", (allRooms) => {
             setAllRooms(allRooms);
-            // console.log(allRooms, 'all rooms')
+            console.log(allRooms, 'all rooms')
         })
     }, [])
 
