@@ -38,7 +38,7 @@ const RichPanel = ({ children, icon, label }) => {
     );
 };
 
-const SideBar = ({ users, userRooms, allRooms }) => {
+const SideBar = ({ users, userRooms, allRooms, joinRoom }) => {
 
     return (
         <Box fill direction="row">
@@ -84,8 +84,8 @@ const SideBar = ({ users, userRooms, allRooms }) => {
 
                                                         {
                                                             allRooms.map((room) => (
-                                                                <Text key={room}>
-                                                                    <StatusGoodSmall color='status-ok' size='small' />
+                                                                <Text key={room} onClick={() => joinRoom(room)}>
+                                                                    <StatusGoodSmall  style={{cursor: 'pointer'}} color='status-ok' size='small' />
                                                                     <strong> {room}</strong>
                                                                 </Text>
                                                             ))
@@ -107,7 +107,7 @@ const SideBar = ({ users, userRooms, allRooms }) => {
                                                 <Box>
                                                     {
                                                         userRooms.map(({ room }) => (
-                                                            <Text key={room}>
+                                                            <Text key={room} onClick={() => joinRoom(room)}>
                                                                 <StatusGoodSmall color='status-ok' size='small' />
                                                                 <strong> {room}</strong>
                                                             </Text>

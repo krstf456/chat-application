@@ -42,7 +42,8 @@ io.on('connection', (socket) => {
         updateSessions(session)
 
         io.to(session.room).emit('userNames', { room: session.room, users: getUsersInRoom(session.room) })
-        callback()
+
+        if(typeof callback === "function") callback();
     })
 
     socket.on('sendMessage', (message, callback) => {

@@ -47,8 +47,11 @@ const ChatPage = ({ location }) => {
         })
     }, [])
 
-
-
+    function joinRoom(room) {
+        socket.emit('next', { name, room }, () => {})
+        console.log(`joined the ${room}`)
+    }
+ 
     const sendMessage = (event) => {
         event.preventDefault()
         if (message) {
@@ -60,7 +63,7 @@ const ChatPage = ({ location }) => {
 
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
             <Box style={size === 'small' ? { display: 'none' } : { display: 'block' }}>
-                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} />
+                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} joinRoom={joinRoom} />
             </Box>
             <Box direction='column' fill='horizontal'>
                 <Box>
