@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Unlock, Lock, FormSubtract, FormAdd, Group, StatusGoodSmall, ChatOption, Chat} from 'grommet-icons';
+import { Unlock, Lock, FormSubtract, FormAdd, Group, StatusGoodSmall, ChatOption, Chat } from 'grommet-icons';
 import { Accordion, AccordionPanel, Box, Heading, Text, ThemeContext } from 'grommet';
 import backgroundImage from '../../Assets/background.jpg'
 
@@ -40,6 +40,9 @@ const RichPanel = ({ children, icon, label }) => {
 
 const SideBar = ({ users, userRooms, allRooms }) => {
 
+    const lockedRooms = allRooms.filter(element => element.status === true).map(element => element.roomName)
+    const unlockedRooms = allRooms.filter(element => element.status === false).map(element => element.roomName)
+    console.log(unlockedRooms, lockedRooms)
     return (
         <Box fill direction="row">
             <Box basis="medium" border={{ side: 'right', color: 'brand', size: 'medium' }}>
@@ -68,7 +71,29 @@ const SideBar = ({ users, userRooms, allRooms }) => {
                             <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
                                 <Box gap="xsmall">
                                     <Text color="dark-3">
-                                        <strong>Room Names</strong>
+                                        {
+                                            lockedRooms.length > 0
+                                                ? (
+                                                    <Box>
+
+                                                        {
+                                                            lockedRooms.map((room) => (
+                                                                <Text key={room}>
+                                                                    <StatusGoodSmall color='status-ok' size='small' />
+                                                                    <strong> {room}</strong>
+                                                                </Text>
+                                                            ))
+                                                        }
+                                                    </Box>
+                                                )
+                                                : (
+                                                    <Box>
+                                                        <Text>
+                                                            No rooms available
+                                                         </Text>
+                                                    </Box>
+                                                )
+                                        }
                                     </Text>
                                 </Box>
                             </Box>
@@ -78,12 +103,12 @@ const SideBar = ({ users, userRooms, allRooms }) => {
                                 <Box gap="xsmall">
                                     <Text color="dark-3">
                                         {
-                                            allRooms
+                                            unlockedRooms.length > 0
                                                 ? (
                                                     <Box>
 
                                                         {
-                                                            allRooms.map((room) => (
+                                                            unlockedRooms.map((room) => (
                                                                 <Text key={room}>
                                                                     <StatusGoodSmall color='status-ok' size='small' />
                                                                     <strong> {room}</strong>
@@ -92,7 +117,13 @@ const SideBar = ({ users, userRooms, allRooms }) => {
                                                         }
                                                     </Box>
                                                 )
-                                                : null
+                                                : (
+                                                    <Box>
+                                                        <Text>
+                                                            No rooms available
+                                                         </Text>
+                                                    </Box>
+                                                )
                                         }
                                     </Text>
                                 </Box>

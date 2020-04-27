@@ -90,7 +90,7 @@ io.on('connection', (socket) => {
         socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has joined` })
         socket.join(session.room)
 
-        const rooms = roomParameters.map(element => element.roomName)
+        const rooms = roomParameters.map(element => {const room = {roomName: element.roomName, status: element.status}; return room})
         console.log(rooms, 'all rooms')
         sessions.forEach(element => {
             io.sockets.connected[element.id].emit('allRooms', rooms)
