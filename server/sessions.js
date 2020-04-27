@@ -21,6 +21,7 @@ const removeSession = (id) => {
 }
 
 const removeRoom = (room) => {
+    if (roomParameters.length > 0){
     const checkIfEmpty = sessions.find((session) => session.room === room)
     console.log(checkIfEmpty, 'cp-2')
     if (checkIfEmpty === undefined) {
@@ -31,7 +32,7 @@ const removeRoom = (room) => {
             roomParameters.splice(index, 1)
             console.log(roomParameters, 'cp-3')
         }
-    }
+    }}
     return roomParameters
 }
 

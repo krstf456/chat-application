@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import queryString from 'query-string'
 import io from 'socket.io-client'
-import ChatBoxHeader from './ChatBox/ChatBoxHeader'
+import ChatBoxHeader from './ChatBoxHeader'
 import Input from '../Input/Input'
 import SideBar from './SideBar'
 import { Box, ResponsiveContext, Footer } from 'grommet'

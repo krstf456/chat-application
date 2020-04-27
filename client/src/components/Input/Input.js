@@ -3,27 +3,28 @@ import { Box, Button, TextInput } from 'grommet'
 
 const Input = ({ message, setMessage, sendMessage }) => {
     return (
-        <Box 
-       direction='row'
-       >
+        <Box
+            direction='row'
+        >
             <Box
-            width='medium'
+                width='medium'
             >
-                <TextInput 
-                value={message} 
-                placeholder='Enter your message'
-                onChange={(event) => setMessage(event.target.value)}
-                onKeyPress={(event) => event.key === 'Enter' ? sendMessage(event) : null} />
+                <TextInput
+                    value={message}
+                    placeholder='Enter your message'
+                    onChange={(event) => setMessage(event.target.value)}
+                    onKeyPress={(event) => event.key === 'Enter' ? sendMessage(event) : null} />
 
             </Box>
-            <Box    
-            justify='center'
-            width='small'
-            align='center'
-            border='all'
-            background='brand'
+            <Box
+                justify='center'
+                width='small'
+                align='center'
+                border='all'
+                background='brand'
+                onClick={(event) => sendMessage(event)}
             >
-                <Button  onClick={(event) => sendMessage(event)}>Send</Button>  
+                Send
             </Box>
         </Box>
     )
