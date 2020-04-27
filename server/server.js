@@ -34,7 +34,8 @@ io.on('connection', (socket) => {
         socket.emit('message', { session: 'admin', text: `Hey ${session.name}, welcome to ${session.room}` })
         socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has joined` })
         socket.join(session.room)
-        rooms = addRoom(session.room)
+        //const [rooms, roomRemains] = addRoom(session.room)
+        const rooms = addRoom(session.room)
         sessions.forEach(element => {
             io.sockets.connected[element.id].emit('allRooms', rooms)
         });

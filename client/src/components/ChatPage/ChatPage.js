@@ -49,7 +49,7 @@ const ChatPage = ({ location }) => {
     }, [])
 
     function joinRoom(room) {
-       
+
             socket.emit('join', { name, room }, () => {})
             console.log(`joined the ${room}`)
         
@@ -67,7 +67,7 @@ const ChatPage = ({ location }) => {
 
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
             <Box style={size === 'small' ? { display: 'none' } : { display: 'block' }}>
-                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} joinRoom={joinRoom} />
+                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} joinRoom={joinRoom} name={name} />
             </Box>
             <Box direction='column' fill='horizontal'>
                 <Box>

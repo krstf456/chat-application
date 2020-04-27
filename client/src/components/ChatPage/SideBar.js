@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Unlock, Lock, FormSubtract, FormAdd, Group, StatusGoodSmall, ChatOption, Chat} from 'grommet-icons';
 import { Accordion, AccordionPanel, Box, Heading, Text, ThemeContext } from 'grommet';
+import { Link } from 'react-router-dom'
 import backgroundImage from '../../Assets/background.jpg'
 
 const richAccordionTheme = {
@@ -38,7 +39,7 @@ const RichPanel = ({ children, icon, label }) => {
     );
 };
 
-const SideBar = ({ users, userRooms, allRooms, joinRoom }) => {
+const SideBar = ({ users, userRooms, allRooms, joinRoom, name }) => {
 
     return (
         <Box fill direction="row">
@@ -84,10 +85,13 @@ const SideBar = ({ users, userRooms, allRooms, joinRoom }) => {
 
                                                         {
                                                             allRooms.map((room) => (
-                                                                <Text key={room} onClick={() => joinRoom(room)}>
+                                                                <Link to={`/chat?name=${name}&room=${room}`} target="_blank">
+
+                                                                <Text key={room} >
                                                                     <StatusGoodSmall  style={{cursor: 'pointer'}} color='status-ok' size='small' />
                                                                     <strong> {room}</strong>
                                                                 </Text>
+                                                                </Link>
                                                             ))
                                                         }
                                                     </Box>
@@ -107,7 +111,7 @@ const SideBar = ({ users, userRooms, allRooms, joinRoom }) => {
                                                 <Box>
                                                     {
                                                         userRooms.map(({ room }) => (
-                                                            <Text key={room} onClick={() => joinRoom(room)}>
+                                                            <Text>
                                                                 <StatusGoodSmall color='status-ok' size='small' />
                                                                 <strong> {room}</strong>
                                                             </Text>
