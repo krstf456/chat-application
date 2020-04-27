@@ -11,16 +11,18 @@ let socket
 const ChatPage = ({ location }) => {
 
     const [name, setName] = useState('')
-    const [room, setRoom] = useState('')
+    const [room, setRoom] = useState([])
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
     const [users, setUsers] = useState('')
+    const [userRooms, setUserRooms] = useState('')
+    const [allRooms, setAllRooms] = useState([])
     const ENDPOINT = 'localhost:5000'
 
     const size = useContext(ResponsiveContext)
     useEffect(() => {
         const { name, room } = queryString.parse(location.search)
-        
+
         socket = io(ENDPOINT)
         setName(name)
         setRoom(room)
@@ -33,10 +35,19 @@ const ChatPage = ({ location }) => {
         socket.on('message', message => {
             setMessages(messages => [...messages, message]);
         });
-        socket.on("roomNames", ({ users }) => {
+        socket.on("userNames", ({ users }) => {
             setUsers(users);
         })
+        socket.on("userRooms", ({ userRooms }) => {
+            setUserRooms(userRooms);
+        })
+        socket.on("allRooms", (allRooms) => {
+            setAllRooms(allRooms);
+            // console.log(allRooms, 'all rooms')
+        })
     }, [])
+
+
 
     const sendMessage = (event) => {
         event.preventDefault()
@@ -45,13 +56,11 @@ const ChatPage = ({ location }) => {
         }
     }
 
-    console.log(message, messages)
-    console.log(size)
     return (
 
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
             <Box style={size === 'small' ? { display: 'none' } : { display: 'block' }}>
-                <SideBar users={users} />
+                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} />
             </Box>
             <Box direction='column' fill='horizontal'>
                 <Box>
@@ -59,11 +68,10 @@ const ChatPage = ({ location }) => {
                         roomName={room}
                         messages={messages}
                         name={name}
-
                     />
                 </Box>
                 <Footer justify='center'
-                alignSelf='center'>
+                    alignSelf='center'>
                     <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
                 </Footer>
             </Box>

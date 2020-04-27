@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Unlock, Lock, FormSubtract, FormAdd, User, StatusGoodSmall } from 'grommet-icons';
+import { Unlock, Lock, FormSubtract, FormAdd, Group, StatusGoodSmall, ChatOption, Chat} from 'grommet-icons';
 import { Accordion, AccordionPanel, Box, Heading, Text, ThemeContext } from 'grommet';
 import backgroundImage from '../../Assets/background.jpg'
 
@@ -15,10 +15,11 @@ const richAccordionTheme = {
 const RichPanel = ({ children, icon, label }) => {
     const [hovering, setHovering] = useState(false);
 
+
     const renderPanelTitle = () => (
         <Box direction="row" align="center" gap="small" pad={{ horizontal: 'small' }}>
             {icon}
-            <Heading level={4} color={hovering ? 'dark-1' : 'dark-3'}>
+            <Heading level={5} color={hovering ? 'dark-1' : 'dark-3'}>
                 {label}
             </Heading>
         </Box>
@@ -37,11 +38,11 @@ const RichPanel = ({ children, icon, label }) => {
     );
 };
 
-const SideBar = ({ users }) => {
-    // const [users, ]
+const SideBar = ({ users, userRooms, allRooms }) => {
+
     return (
         <Box fill direction="row">
-            <Box basis="medium" border={{ side:'right', color: 'brand', size: 'medium' }}>
+            <Box basis="medium" border={{ side: 'right', color: 'brand', size: 'medium' }}>
                 <Box
                     flex={true}
                     border="bottom"
@@ -64,14 +65,7 @@ const SideBar = ({ users }) => {
                 <ThemeContext.Extend value={richAccordionTheme}>
                     <Accordion>
                         <RichPanel icon={<Lock color="brand" />} label="Locked Rooms">
-                            <Box
-                                pad={{
-                                    bottom: 'medium',
-                                    horizontal: 'small',
-                                    top: 'small',
-                                }}
-                                gap="medium"
-                            >
+                            <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
                                 <Box gap="xsmall">
                                     <Text color="dark-3">
                                         <strong>Room Names</strong>
@@ -80,30 +74,54 @@ const SideBar = ({ users }) => {
                             </Box>
                         </RichPanel>
                         <RichPanel icon={<Unlock color="brand" />} label="Unlocked Rooms">
-                            <Box
-                                pad={{
-                                    bottom: 'medium',
-                                    horizontal: 'small',
-                                    top: 'small',
-                                }}
-                                gap="medium"
-                                overflow="auto"
-                                style={{ maxHeight: '400px' }}
-                            >
+                            <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
+                                <Box gap="xsmall">
+                                    <Text color="dark-3">
+                                        {
+                                            allRooms
+                                                ? (
+                                                    <Box>
+
+                                                        {
+                                                            allRooms.map((room) => (
+                                                                <Text key={room}>
+                                                                    <StatusGoodSmall color='status-ok' size='small' />
+                                                                    <strong> {room}</strong>
+                                                                </Text>
+                                                            ))
+                                                        }
+                                                    </Box>
+                                                )
+                                                : null
+                                        }
+                                    </Text>
+                                </Box>
+                            </Box>
+                        </RichPanel>
+                        <RichPanel icon={<ChatOption color="brand" />} label="Your Rooms">
+                            <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
                                 <Text color="dark-3">
-                                    <strong>Room Names</strong>.
+                                    {
+                                        userRooms
+                                            ? (
+                                                <Box>
+                                                    {
+                                                        userRooms.map(({ room }) => (
+                                                            <Text key={room}>
+                                                                <StatusGoodSmall color='status-ok' size='small' />
+                                                                <strong> {room}</strong>
+                                                            </Text>
+                                                        ))
+                                                    }
+                                                </Box>
+                                            )
+                                            : null
+                                    }
                                 </Text>
                             </Box>
                         </RichPanel>
-                        <RichPanel icon={<User color="brand" />} label="Members">
-                            <Box
-                                pad={{
-                                    bottom: 'medium',
-                                    horizontal: 'small',
-                                    top: 'small',
-                                }}
-                                gap="medium"
-                            >
+                        <RichPanel icon={<Group color="brand" />} label="Members">
+                            <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
                                 {
                                     users
                                         ? (
