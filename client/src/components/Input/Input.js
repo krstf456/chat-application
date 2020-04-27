@@ -1,7 +1,10 @@
 import React from 'react'
 import './Input.css'
 import { Box, Button, TextInput } from 'grommet'
+import { Socket } from 'net'
 
+// const typing = true
+// let timeout = undefined
 
 const Input = ({ message, setMessage, sendMessage }) => {
     return (
@@ -19,7 +22,9 @@ const Input = ({ message, setMessage, sendMessage }) => {
                 value={message} 
                 placeholder='Enter your message'
                 onChange={(event) => setMessage(event.target.value)}
-                onKeyPress={(event) => event.key === 'Enter' ? sendMessage(event) : null} />
+                onKeyPress={(event) => event.key === 'Enter' ? sendMessage(event) : null}
+                // onKeyPress={(event) =>{if(event.which!=13) {typing=true socket.emit('typing', )}}} 
+                />
 
             </Box>
             <Box 

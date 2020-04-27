@@ -3,6 +3,7 @@ import { Box, Text } from "grommet";
 import styled from 'styled-components';
 
 
+
 const Message = ({ message: { text, user }, name }) => {
     let isSentByCurrentUser = false;
 
