@@ -1,6 +1,6 @@
 import React from 'react'
 import { Header, Heading, Button, Main, Footer, Box } from 'grommet'
-import { Home } from 'grommet-icons';
+import { Logout } from 'grommet-icons';
 import { Link } from 'react-router-dom'
 import DisplayMsg from '../../DisplayMsg/DisplayMsg'
 import Input from '../../Input/Input'
@@ -14,7 +14,7 @@ const ChatBoxHeader = ({ roomName, messages, name}) => {
                     {roomName}
                 </Heading>
                 <Link to='/'>
-                    <Button icon={<Home />} hoverIndicator />
+                    <Button icon={<Logout />} hoverIndicator />
                 </Link>
             </Header>
             <Main>

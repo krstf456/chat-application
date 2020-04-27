@@ -9,21 +9,21 @@ const app = express()
 const server = http.createServer(app)
 const io = socketio(server)
 
-
-io.eio.pingTimeout = 120000; // 2 minutes
-// io.eio.pingInterval = 5000;  // 5 seconds
-
+//Allow cors between 3000 and 5000
 const cors = require('cors');
-app.use(cors());
 
 const bcrypt = require('bcrypt')
 const cookieSession = require('cookie-session')
 
+const { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, sessions } = require('./sessions')
 const roomParameters = []
 
-// Parse request body as json
-app.use(express.json())
+//Delay server from restarting
+io.eio.pingTimeout = 120000; // 2 minutes
+// io.eio.pingInterval = 5000;  // 5 seconds
 
+app.use(cors());
+app.use(express.json())
 app.use(cookieSession({
     secret: 'aVeryS3cr3tK3y',
     maxAge: 1000 * 10, // 10s
@@ -32,11 +32,14 @@ app.use(cookieSession({
     secure: false,
 }))
 
-app.get('/rooms', (req, res) => {
-    res.json(roomParameters)
-})
+//Test if working 
+// app.get('/rooms', (req, res) => {
+//     res.json(roomParameters)
+// })
 
-// Register a new user
+//1. Creates a new room if the room does not exist
+//2. If rooms exits checks rooms status
+//3. If locked checks password
 app.post('/rooms', async (req, res) => {
     const roomParam = roomParameters.find(roomParam => roomParam.roomName === req.body.roomName)
     if (roomParam) { //room with same name exists
@@ -65,50 +68,7 @@ app.post('/rooms', async (req, res) => {
         return res.status(200).json('Enter room success')
     }
 }
-
 )
-
-// Logout
-app.delete('/logout', (req, res) => {
-    // Check if user already is logged out
-    if (!req.session.username) {
-        return res.status(400).json('You are already logged out')
-    }
-
-    // Remove the session and send a response
-    req.session = null
-    res.send('You are now logged out!')
-})
-
-
-module.exports = { roomParameters }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, sessions } = require('./sessions')
 
 const updateSessions = (session) => {
     roomsWithUser = getRoomsWithUser(session.name)
@@ -119,21 +79,19 @@ const updateSessions = (session) => {
     });
 }
 
-
 io.on('connection', (socket) => {
     console.log('new connection established')
-
     socket.on('join', ({ name, room }, callback) => {
-
         const { error, session } = addSession({ id: socket.id, name, room })
-        if (error) return callback(error)
 
+        if (error) return callback(error)
+         // when the client joins, broadcast it to others and send welcome to the client 
         socket.emit('message', { session: 'admin', text: `Hey ${session.name}, welcome to ${session.room}` })
         socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has joined` })
         socket.join(session.room)
-        const rooms = roomParameters.map(element => element.roomName)
 
-        console.log(rooms, 'allrooms')
+        const rooms = roomParameters.map(element => element.roomName)
+        console.log(rooms, 'all rooms')
         sessions.forEach(element => {
             io.sockets.connected[element.id].emit('allRooms', rooms)
         });
@@ -150,7 +108,7 @@ io.on('connection', (socket) => {
         callback()
     })
 
-    // when the client disconnects, we broadcast it to others
+    // when the client disconnects, broadcast it to others
     socket.on('disconnect', () => {
         console.log(`User has left`)
         const [session, roomParameters] = removeSession(socket.id);
@@ -182,3 +140,5 @@ io.on('connection', (socket) => {
 
 app.use(router)
 server.listen(port, () => console.log(`Server is listening on ${port}`))
+
+module.exports = { roomParameters }
