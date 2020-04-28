@@ -8,10 +8,57 @@ const router = require('./router')
 const app = express()
 const server = http.createServer(app)
 const io = socketio(server)
+
 io.eio.pingTimeout = 120000; // 2 minutes
 // io.eio.pingInterval = 5000;  // 5 seconds
 
+const cors = require('cors');
+
+const bcrypt = require('bcrypt')
+const cookieSession = require('cookie-session')
+
 const { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, addRoom, sessions } = require('./sessions')
+
+app.use(cors());
+app.use(express.json())
+app.use(cookieSession({
+    secret: 'aVeryS3cr3tK3y',
+    maxAge: 1000 * 10, // 10s
+    sameSite: 'strict',
+    httpOnly: true,
+    secure: false,
+}))
+
+
+app.post('/rooms', async (req, res) => {
+    const roomParam = roomParameters.find(roomParam => roomParam.roomName === req.body.roomName)
+    if (roomParam) { //room with same name exists
+        if (roomParam.status === req.body.status) {
+            if (roomParam.status === false) {
+                return res.status(200).json('Enter room success')
+            }
+            else {
+                if (!await bcrypt.compare(req.body.password, roomParam.password)) {
+                    return res.status(401).json({ error: 'Wrong room name or password' })
+                } else {
+                    return res.status(200).json('Enter room success')
+                }
+            }
+        }
+        return res.status(401).json({ error: 'Room exists with different locked status' })
+    } else {//room is new
+        newRoom = {
+            roomName: req.body.roomName,
+            status: req.body.status
+        }
+        if (req.body.password) {
+            newRoom.password = await bcrypt.hash(req.body.password, 10)
+        }
+        roomParameters.push(newRoom)
+        return res.status(200).json('Enter room success')
+    }
+}
+)
 
 const updateSessions = (session) => {
     roomsWithUser = getRoomsWithUser(session.name)
