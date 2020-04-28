@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import LoginPage from './LoginPage'
 import ChatPage from '../ChatPage/ChatPage'
-import { Add, FormClose, StatusGood } from "grommet-icons";
+import { Add, FormClose, StatusGood, Update } from "grommet-icons";
 import { Box, Button, Layer, Text } from "grommet";
 
 const HomePage = () => {
@@ -10,16 +10,19 @@ const HomePage = () => {
     const [room, setRoom] = useState('')
     const [chat, setChat] = useState(false)
     const [error, setError] = useState(false);
+    const [update, setUpdate] = useState(false);
     const onClose = () => setError(undefined);
     const [errorMessage, setErrorMessage] = useState('')
 
     const submitForm = (value) => {
+        console.log(value)
         authentication(value.room, value.password, value.lockedStatus)
         setName(value.name)
         setRoom(value.room)
     }
 
     const authentication = async (room, password, status) => {
+        setChat(false)
         setError(false);
         try {
             fetch('http://localhost:5000/rooms', {
@@ -45,6 +48,8 @@ const HomePage = () => {
                 else {
                     console.log('ok')
                     setChat(true)
+                    setUpdate(!update)
+                    console.log(name, room, 'test534')
                 }
             })
         } catch (error) {
@@ -53,11 +58,19 @@ const HomePage = () => {
         }
     }
 
+    // useEffect(() => {
+        
+    //     return () => {
+    //         console.log(room, name, 'test123')
+    //        displayPage()
+    //     }
+    // }, [update])
+
     const displayPage = () => {
         let displayPage = <LoginPage submitForm={submitForm} showError={error} />
         if (chat) {
-
-            displayPage = <ChatPage user={name} roomName={room} setChat={setChat} />
+            displayPage = <ChatPage user={name} roomName={room} setChat={setChat} submitForm={submitForm} />
+            
         }
         return displayPage
     }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Unlock, Lock, FormSubtract, FormAdd, Group, StatusGoodSmall, ChatOption, Chat } from 'grommet-icons';
 import { Accordion, AccordionPanel, Box, Heading, Text, ThemeContext } from 'grommet';
 import backgroundImage from '../../Assets/background.jpg'
+import { Link } from 'react-router-dom'
 
 const richAccordionTheme = {
     accordion: {
@@ -38,7 +39,19 @@ const RichPanel = ({ children, icon, label }) => {
     );
 };
 
-const SideBar = ({ users, userRooms, allRooms }) => {
+const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom }) => {
+    const changeChat = (room) => {
+        if (room === currentRoom) {
+            console.log('same room')
+        }
+        else {
+            const values =
+                { lockedStatus: false, name: name, room: room }
+
+            console.log('here')
+            submitForm(values)
+        }
+    }
 
     const lockedRooms = allRooms.filter(element => element.status === true).map(element => element.roomName)
     const unlockedRooms = allRooms.filter(element => element.status === false).map(element => element.roomName)
@@ -109,10 +122,12 @@ const SideBar = ({ users, userRooms, allRooms }) => {
 
                                                         {
                                                             unlockedRooms.map((room) => (
-                                                                <Text key={room}>
+
+                                                                <Text key={room} onClick={() => { changeChat(room) }}>
                                                                     <StatusGoodSmall color='status-ok' size='small' />
                                                                     <strong> {room}</strong>
                                                                 </Text>
+
                                                             ))
                                                         }
                                                     </Box>

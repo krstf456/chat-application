@@ -7,7 +7,7 @@ import SideBar from './SideBar'
 import { Box, ResponsiveContext, Footer } from 'grommet'
 
 let socket
-const ChatPage = ({ user, roomName, setChat }) => {
+const ChatPage = ({ user, roomName, setChat, submitForm }) => {
     const [name, setName] = useState(user)
     const [room, setRoom] = useState(roomName)
     const [message, setMessage] = useState('')
@@ -60,7 +60,7 @@ const ChatPage = ({ user, roomName, setChat }) => {
     return (
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
             <Box style={size === 'small' ? { display: 'none' } : { display: 'block' }}>
-                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} />
+                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} name={name} currentRoom={room} submitForm={submitForm}/>
             </Box>
             <Box direction='column' fill='horizontal'>
                 <Box>

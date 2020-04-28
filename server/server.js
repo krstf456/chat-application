@@ -33,9 +33,9 @@ app.use(cookieSession({
 }))
 
 //Test if working 
-// app.get('/rooms', (req, res) => {
-//     res.json(roomParameters)
-// })
+app.get('/rooms', (req, res) => {
+    res.json(roomParameters)
+})
 
 //1. Creates a new room if the room does not exist
 //2. If rooms exits checks rooms status
