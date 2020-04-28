@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import DisplayMsg from '../DisplayMsg/DisplayMsg'
 import Input from '../Input/Input'
 
-const ChatBoxHeader = ({ roomName, messages, name}) => {
+const ChatBoxHeader = ({ roomName, messages, name, logout}) => {
     // console.log(name)
     return (
         <Box>
@@ -13,14 +13,13 @@ const ChatBoxHeader = ({ roomName, messages, name}) => {
                 <Heading level={5} >
                     {roomName}
                 </Heading>
-                <Link to='/'>
-                    <Button icon={<Logout />} hoverIndicator />
-                </Link>
+                {/* <Link to='/'> */}
+                    <Button icon={<Logout/>} hoverIndicator onClick={()=>{logout()}} />
+                {/* </Link> */}
             </Header>
             <Main>
                 <DisplayMsg messages={messages} name={name} />
             </Main>
-          
         </Box>)
 }
 

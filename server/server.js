@@ -115,7 +115,7 @@ io.on('connection', (socket) => {
         
         console.log(session, roomParameters, 'cp-6')
         
-        const rooms = roomParameters.map(element => element.roomName)
+        const rooms = roomParameters.map(element => {const room = {roomName: element.roomName, status: element.status}; return room})
         if (session) {
             console.log(session.name, 'has left')
             socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has left` })

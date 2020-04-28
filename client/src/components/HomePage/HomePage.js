@@ -57,7 +57,7 @@ const HomePage = () => {
         let displayPage = <LoginPage submitForm={submitForm} showError={error} />
         if (chat) {
 
-            displayPage = <ChatPage user={name} roomName={room} />
+            displayPage = <ChatPage user={name} roomName={room} setChat={setChat} />
         }
         return displayPage
     }
