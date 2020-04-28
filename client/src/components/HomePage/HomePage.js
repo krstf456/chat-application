@@ -14,12 +14,12 @@ const HomePage = () => {
     const [errorMessage, setErrorMessage] = useState('')
 
     const submitForm = (value) => {
-        test(value.room, value.password, value.lockedStatus)
+        authentication(value.room, value.password, value.lockedStatus)
         setName(value.name)
         setRoom(value.room)
     }
 
-    const test = async (room, password, status) => {
+    const authentication = async (room, password, status) => {
         setError(false);
         try {
             fetch('http://localhost:5000/rooms', {
