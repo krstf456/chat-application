@@ -6,7 +6,7 @@ import Input from '../Input/Input'
 import SideBar from './SideBar'
 import { Box, ResponsiveContext, Footer } from 'grommet'
 
-let socket
+const socket = io.connect('localhost:5000')
 const ChatPage = ({ user, roomName, setChat, submitForm }) => {
     const [name, setName] = useState(user)
     const [room, setRoom] = useState(roomName)
@@ -15,23 +15,32 @@ const ChatPage = ({ user, roomName, setChat, submitForm }) => {
     const [users, setUsers] = useState('')
     const [userRooms, setUserRooms] = useState('')
     const [allRooms, setAllRooms] = useState([])
-    const ENDPOINT = 'localhost:5000'
 
     const size = useContext(ResponsiveContext)
     useEffect(() => {
         // const { name, room } = {user, roomName}
-        socket = io(ENDPOINT)
+        // console.log(socket.server.eio.clients, 'test')
         // setName(user)
         // setRoom(roomName)
-        console.log(name,room)
+        console.log(name, room)
         socket.emit('join', { name, room }, () => {
         })
+        // socket.on("disconnect", () => {
+        //     console.log("Disconnected from server")
+        // })
     }, [])
+
+    // useEffect(() => {
+
+    //     return () => {
+    //       socket.emit("disconnect");
+    //     };
+    //   }, []);
 
     useEffect(() => {
         socket.on('message', message => {
             setMessages(messages => [...messages, message]);
-            
+
         });
         socket.on("userNames", ({ users }) => {
             setUsers(users);
@@ -43,24 +52,25 @@ const ChatPage = ({ user, roomName, setChat, submitForm }) => {
             setAllRooms(allRooms);
             console.log(allRooms, 'all rooms')
         })
+
     }, [])
 
     const sendMessage = (event) => {
         event.preventDefault()
         if (message) {
-            socket.emit('sendMessage', message, () => setMessage(''))
+            socket.emit('sendMessage', message, room, () => setMessage(''))
         }
     }
     const logout = () => {
-        socket.disconnect()
         setChat(false)
+       socket.emit('leaveRoom')
     }
-  
+
 
     return (
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
             <Box style={size === 'small' ? { display: 'none' } : { display: 'block' }}>
-                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} name={name} currentRoom={room} submitForm={submitForm}/>
+                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} name={name} currentRoom={room} submitForm={submitForm} logout={logout} />
             </Box>
             <Box direction='column' fill='horizontal'>
                 <Box>

@@ -39,7 +39,7 @@ const RichPanel = ({ children, icon, label }) => {
     );
 };
 
-const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom }) => {
+const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom,logout }) => {
     const changeChat = (room) => {
         if (room === currentRoom) {
             console.log('same room')
@@ -49,7 +49,10 @@ const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom }) 
                 { lockedStatus: false, name: name, room: room }
 
             console.log('here')
+            logout()
             submitForm(values)
+            
+            
         }
     }
 

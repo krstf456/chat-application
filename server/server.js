@@ -83,15 +83,18 @@ io.on('connection', (socket) => {
     console.log('new connection established')
     socket.on('join', ({ name, room }, callback) => {
         const { error, session } = addSession({ id: socket.id, name, room })
-
+        console.log(socket.id)
+        
         if (error) return callback(error)
-         // when the client joins, broadcast it to others and send welcome to the client 
+        // when the client joins, broadcast it to others and send welcome to the client 
         socket.emit('message', { session: 'admin', text: `Hey ${session.name}, welcome to ${session.room}` })
         socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has joined` })
         socket.join(session.room)
-
-        const rooms = roomParameters.map(element => {const room = {roomName: element.roomName, status: element.status}; return room})
-        console.log(rooms, 'all rooms')
+        console.log(io.sockets.adapter.rooms, 'checkpoint')
+        console.log(Object.keys(socket.rooms), 'checkpoint-2')
+        // console.log(io.sockets.adapter.rooms['1'], 'checkpoint-3')
+        const rooms = roomParameters.map(element => { const room = { roomName: element.roomName, status: element.status }; return room })
+        // console.log(rooms, 'all rooms')
         sessions.forEach(element => {
             io.sockets.connected[element.id].emit('allRooms', rooms)
         });
@@ -102,28 +105,31 @@ io.on('connection', (socket) => {
         callback()
     })
 
-    socket.on('sendMessage', (message, callback) => {
+    socket.on('sendMessage', (message,room, callback) => {
         const session = getSession(socket.id)
-        io.to(session.room).emit('message', { session: session.name, text: message })
+        io.to(room).emit('message', { session: session.name, text: message })
         callback()
     })
 
     // when the client disconnects, broadcast it to others
-    socket.on('disconnect', () => {
+    socket.on('leaveRoom', () => {
+       
         console.log(`User has left`)
         const [session, roomParameters] = removeSession(socket.id);
-        
+
         console.log(session, roomParameters, 'cp-6')
-        
-        const rooms = roomParameters.map(element => {const room = {roomName: element.roomName, status: element.status}; return room})
+
+        const rooms = roomParameters.map(element => { const room = { roomName: element.roomName, status: element.status }; return room })
         if (session) {
             console.log(session.name, 'has left')
+            
             socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has left` })
             io.to(session.room).emit('userNames', { room: session.room, users: getUsersInRoom(session.room) });
             sessions.forEach(element => {
                 io.sockets.connected[element.id].emit('allRooms', rooms)
             });
             updateSessions(session)
+            socket.leave(session.room)
         }
     })
 
