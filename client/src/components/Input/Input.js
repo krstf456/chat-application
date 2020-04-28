@@ -17,10 +17,17 @@ const Input = ({ message, setMessage, sendMessage, emitTyping }) => {
             >
                 <TextInput 
                 value={message} 
-                emitTyping={emitTyping}
                 placeholder='Enter your message'
                 onChange={(event) => setMessage(event.target.value)}
                 onKeyPress={(event) => event.key === 'Enter' ? sendMessage(event) : null}
+                onChange={(event) => {
+                    setMessage(event.target.value)
+                    if(event.target.value.length > 0) {
+                        emitTyping(true)
+                    } else {
+                        emitTyping(false)
+                    }
+                }}
                  />
 
             </Box>
