@@ -3,8 +3,7 @@ import './Input.css'
 import { Box, Button, TextInput } from 'grommet'
 import { Socket } from 'net'
 
-// const typing = true
-// let timeout = undefined
+
 
 const Input = ({ message, setMessage, sendMessage, emitTyping }) => {
     return (
