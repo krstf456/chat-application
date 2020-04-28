@@ -12,10 +12,8 @@ const Input = ({ message, setMessage, sendMessage, emitTyping }) => {
 
         <Box 
        direction='row'
-       
        >
             <Box
-            
             width='medium'
             >
                 <TextInput 
@@ -24,12 +22,10 @@ const Input = ({ message, setMessage, sendMessage, emitTyping }) => {
                 placeholder='Enter your message'
                 onChange={(event) => setMessage(event.target.value)}
                 onKeyPress={(event) => event.key === 'Enter' ? sendMessage(event) : null}
-                 
-                />
+                 />
 
             </Box>
             <Box 
-            
             justify='center'
             width='small'
             align='center'
@@ -43,17 +39,7 @@ const Input = ({ message, setMessage, sendMessage, emitTyping }) => {
             
         </Box>
         
-        // <from>
-        //     <input
-        //         className='input'
-        //         type='text'
-        //         placeholder='Type your message here...'
-        //         value={message}
-        //         onChange={(event) => setMessage(event.target.value)}
-        //         onKeyPress={(event) => event.key === 'Enter' ? sendMessage(event) : null}
-        //     />
-        //     <button className='sendButton' onClick={(event) => sendMessage(event)}>Send</button>
-        // </from>
+      
     )
 }
 
