@@ -15,8 +15,8 @@ const cors = require('cors');
 const bcrypt = require('bcrypt')
 const cookieSession = require('cookie-session')
 
-const { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, sessions } = require('./sessions')
-const roomParameters = []
+const { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, sessions, roomParameters } = require('./sessions')
+
 
 //Delay server from restarting
 io.eio.pingTimeout = 120000; // 2 minutes
@@ -112,7 +112,9 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log(`User has left`)
         const [session, roomParameters] = removeSession(socket.id);
+        
         console.log(session, roomParameters, 'cp-6')
+        
         const rooms = roomParameters.map(element => element.roomName)
         if (session) {
             console.log(session.name, 'has left')
@@ -141,4 +143,3 @@ io.on('connection', (socket) => {
 app.use(router)
 server.listen(port, () => console.log(`Server is listening on ${port}`))
 
-module.exports = { roomParameters }

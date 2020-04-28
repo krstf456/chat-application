@@ -1,5 +1,5 @@
-const { roomParameters } = require('./server')
 const sessions = []
+const roomParameters = []
 
 const addSession = ({ id, name, room }) => {
     name = name.trim().toLowerCase()
@@ -11,28 +11,32 @@ const addSession = ({ id, name, room }) => {
 }
 
 const removeSession = (id) => {
+    console.log(sessions, 'test')
     const index = sessions.findIndex((session) => session.id === id)
     const session = sessions.find((session) => session.id === id)
+    console.log(session)
     if (index !== -1) {
         const sessionsRemain = sessions.splice(index, 1)[0]
+        console.log(sessionsRemain)
         const roomsRemain = removeRoom(session.room)
         return [sessionsRemain, roomsRemain]
     }
 }
 
 const removeRoom = (room) => {
-    if (roomParameters.length > 0){
     const checkIfEmpty = sessions.find((session) => session.room === room)
     console.log(checkIfEmpty, 'cp-2')
     if (checkIfEmpty === undefined) {
-        const index = roomParameters.map(function (e) { return e.roomName; }).indexOf(room);
-        //const index = rooms.indexOf(room);
+        
+        const index = roomParameters.map(function (e) { return e.roomName; }).indexOf(room)
+
+        // const index = rooms.indexOf(room);
         console.log(roomParameters, index, 'cp-4')
         if (index > -1) {
             roomParameters.splice(index, 1)
             console.log(roomParameters, 'cp-3')
         }
-    }}
+    }
     return roomParameters
 }
 
@@ -42,4 +46,4 @@ const getUsersInRoom = (room) => sessions.filter((session) => session.room === r
 
 const getRoomsWithUser = (name) => sessions.filter((session) => session.name === name)
 
-module.exports = { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, sessions }
+module.exports = { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, sessions, roomParameters}
