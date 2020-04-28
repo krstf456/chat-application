@@ -6,7 +6,7 @@ import { Socket } from 'net'
 // const typing = true
 // let timeout = undefined
 
-const Input = ({ message, setMessage, sendMessage }) => {
+const Input = ({ message, setMessage, sendMessage, emitTyping }) => {
     return (
         
 
@@ -20,10 +20,11 @@ const Input = ({ message, setMessage, sendMessage }) => {
             >
                 <TextInput 
                 value={message} 
+                emitTyping={emitTyping}
                 placeholder='Enter your message'
                 onChange={(event) => setMessage(event.target.value)}
                 onKeyPress={(event) => event.key === 'Enter' ? sendMessage(event) : null}
-                // onKeyPress={(event) =>{if(event.which!=13) {typing=true socket.emit('typing', )}}} 
+                 
                 />
 
             </Box>
