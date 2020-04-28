@@ -93,7 +93,12 @@ const ChatPage = ({ location }) => {
                 </Box>
                 <Footer justify='center'
                     alignSelf='center'>
-                    <Input message={message} setMessage={setMessage} sendMessage={sendMessage} emitTyping={emitTyping} />
+                    <Input 
+                     message={message}
+                     setMessage={setMessage}
+                     sendMessage={sendMessage} 
+                     emitTyping={emitTyping} 
+                     />
                 </Footer>
             </Box>
         </Box>
