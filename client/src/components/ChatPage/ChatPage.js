@@ -36,6 +36,9 @@ const ChatPage = ({ location }) => {
         socket.on('message', message => {
             setMessages(messages => [...messages, message]);
         });
+        socket.on("userTyping", (msg) => {
+            console.log(msg)
+        } )
         socket.on("userNames", ({ users }) => {
             setUsers(users);
         })
@@ -63,6 +66,16 @@ const ChatPage = ({ location }) => {
         }
     }
 
+    const emitTyping = (typing) => {
+        const msg = name + "is typing.."
+        if(typing) {
+            socket.emit("userTyping", msg, room.name)
+        }
+        else {
+            socket.emit("userTyping", "", room.name)
+        }
+    }
+
     return (
 
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
@@ -75,11 +88,12 @@ const ChatPage = ({ location }) => {
                         roomName={room}
                         messages={messages}
                         name={name}
+                        
                     />
                 </Box>
                 <Footer justify='center'
                     alignSelf='center'>
-                    <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
+                    <Input message={message} setMessage={setMessage} sendMessage={sendMessage} emitTyping={emitTyping} />
                 </Footer>
             </Box>
         </Box>
