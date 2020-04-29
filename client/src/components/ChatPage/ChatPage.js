@@ -12,7 +12,7 @@ const ChatPage = ({ location }) => {
 
     const [name, setName] = useState('')
     const [room, setRoom] = useState([])
-    
+    const  [typing, setTyping] = useState(false) 
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
     const [users, setUsers] = useState('')
@@ -36,8 +36,14 @@ const ChatPage = ({ location }) => {
         socket.on('message', message => {
             setMessages(messages => [...messages, message]);
         });
-        socket.on("userTyping", (msg) => {
-            console.log(msg)
+        // if(typing) {
+        //     socket.emit('emitTyping')
+        // }
+        socket.on("emitTyping", () => {
+            console.log()
+        } )
+        socket.on("stopTyping", () => {
+            console.log()
         } )
         socket.on("userNames", ({ users }) => {
             setUsers(users);
@@ -66,16 +72,21 @@ const ChatPage = ({ location }) => {
         }
     }
 
-    const emitTyping = (typing) => {
+
+    const emitTyping = () => {
         const msg = name + "is typing.."
         if(typing) {
-            socket.emit("userTyping", msg, room.name)
+            console.log('user is typing')
+            socket.emit("emitTyping")
         }
-        else {
-            socket.emit("userTyping", "", room.name)
-        }
-    }
+        // else {
+        //     console.log('user is not typing')
 
+        //     socket.emit("stopTyping")
+        // }
+    }
+    
+    //emitTyping()
     return (
 
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
@@ -91,14 +102,16 @@ const ChatPage = ({ location }) => {
                         
                     />
                 </Box>
+                <p>{emitTyping()}</p>
                 <Footer justify='center'
                     alignSelf='center'>
                     <Input 
                      message={message}
                      setMessage={setMessage}
                      sendMessage={sendMessage} 
-                     emitTyping={emitTyping} 
+                     setTyping={setTyping}
                      />
+
                 </Footer>
             </Box>
         </Box>

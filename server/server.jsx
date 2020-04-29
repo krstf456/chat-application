@@ -128,9 +128,9 @@ io.on('connection', (socket) => {
     })
 
     // when the client emits 'typing', we broadcast it to others
-    socket.on('typing', () => {
+    socket.on('emitTyping', () => {
         console.log('im typing')
-        socket.broadcast.to(session.room).emit('typing', { session: session.name })
+        socket.broadcast.to(session.room).emit('emitTyping', { session: session.name })
     });
 
     // when the client emits 'stop typing', we broadcast it to others

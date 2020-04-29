@@ -5,7 +5,7 @@ import { Socket } from 'net'
 
 
 
-const Input = ({ message, setMessage, sendMessage, emitTyping }) => {
+const Input = ({ message, setMessage, sendMessage, setTyping }) => {
     return (
         
 
@@ -23,9 +23,9 @@ const Input = ({ message, setMessage, sendMessage, emitTyping }) => {
                 onChange={(event) => {
                     setMessage(event.target.value)
                     if(event.target.value.length > 0) {
-                        emitTyping(true)
+                        setTyping(true)
                     } else {
-                        emitTyping(false)
+                        setTyping(false)
                     }
                 }}
                  />
