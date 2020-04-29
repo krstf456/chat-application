@@ -15,6 +15,15 @@ const addRoom = (room) => {
     if (doesRoomExist === false) {
         rooms.push(room)
     }
+    // const index = rooms.indexOf(room)
+    
+    // let roomRemains    
+    // if (index !== -1) {
+    //         const roomRemains = rooms.splice(index, 1)[0]
+    //        console.log(roomRemains, 'bug')
+    //         //return [roomRemains]
+    //     }
+
     return rooms
 }
 

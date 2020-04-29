@@ -12,6 +12,7 @@ const ChatPage = ({ location }) => {
 
     const [name, setName] = useState('')
     const [room, setRoom] = useState([])
+    const  [typing, setTyping] = useState(false) 
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
     const [users, setUsers] = useState('')
@@ -35,6 +36,15 @@ const ChatPage = ({ location }) => {
         socket.on('message', message => {
             setMessages(messages => [...messages, message]);
         });
+        // if(typing) {
+        //     socket.emit('emitTyping')
+        // }
+        socket.on("emitTyping", () => {
+            console.log()
+        } )
+        socket.on("stopTyping", () => {
+            console.log()
+        } )
         socket.on("userNames", ({ users }) => {
             setUsers(users);
         })
@@ -47,8 +57,14 @@ const ChatPage = ({ location }) => {
         })
     }, [])
 
+    function joinRoom(room) {
 
+            socket.emit('join', { name, room }, () => {})
+            console.log(`joined the ${room}`)
+        
+    }
 
+ 
     const sendMessage = (event) => {
         event.preventDefault()
         if (message) {
@@ -56,11 +72,26 @@ const ChatPage = ({ location }) => {
         }
     }
 
+
+    const emitTyping = () => {
+        const msg = name + "is typing.."
+        if(typing) {
+            console.log('user is typing')
+            socket.emit("emitTyping")
+        }
+        // else {
+        //     console.log('user is not typing')
+
+        //     socket.emit("stopTyping")
+        // }
+    }
+    
+    //emitTyping()
     return (
 
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
             <Box style={size === 'small' ? { display: 'none' } : { display: 'block' }}>
-                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} />
+                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} joinRoom={joinRoom} name={name} />
             </Box>
             <Box direction='column' fill='horizontal'>
                 <Box>
@@ -68,11 +99,19 @@ const ChatPage = ({ location }) => {
                         roomName={room}
                         messages={messages}
                         name={name}
+                        
                     />
                 </Box>
+                <p>{emitTyping()}</p>
                 <Footer justify='center'
                     alignSelf='center'>
-                    <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
+                    <Input 
+                     message={message}
+                     setMessage={setMessage}
+                     sendMessage={sendMessage} 
+                     setTyping={setTyping}
+                     />
+
                 </Footer>
             </Box>
         </Box>

@@ -2,7 +2,6 @@ const express = require('express')
 const socketio = require('socket.io')
 const http = require('http')
 
-
 const port = process.env.port || 5000
 const router = require('./router')
 
@@ -10,15 +9,18 @@ const app = express()
 const server = http.createServer(app)
 const io = socketio(server)
 
-io.eio.pingTimeout = 120000; // 2 minutes
-// io.eio.pingInterval = 5000;  // 5 seconds
-
+//Allow cors between 3000--client and 5000--server
 const cors = require('cors');
 
 const bcrypt = require('bcrypt')
 const cookieSession = require('cookie-session')
 
-const { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, addRoom, sessions } = require('./sessions')
+const { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, sessions, roomParameters } = require('./sessions')
+
+
+//Delay server from restarting
+io.eio.pingTimeout = 120000; // 2 minutes
+// io.eio.pingInterval = 5000;  // 5 seconds
 
 app.use(cors());
 app.use(express.json())
@@ -30,7 +32,14 @@ app.use(cookieSession({
     secure: false,
 }))
 
+//Test if working 
+// app.get('/rooms', (req, res) => {
+//     res.json(roomParameters)
+// })
 
+//1. Creates a new room if the room does not exist
+//2. If rooms exits checks rooms status
+//3. If locked checks password
 app.post('/rooms', async (req, res) => {
     const roomParam = roomParameters.find(roomParam => roomParam.roomName === req.body.roomName)
     if (roomParam) { //room with same name exists
@@ -70,20 +79,19 @@ const updateSessions = (session) => {
     });
 }
 
-
 io.on('connection', (socket) => {
     console.log('new connection established')
-
     socket.on('join', ({ name, room }, callback) => {
-
         const { error, session } = addSession({ id: socket.id, name, room })
-        if (error) return callback(error)
 
+        if (error) return callback(error)
+         // when the client joins, broadcast it to others and send welcome to the client 
         socket.emit('message', { session: 'admin', text: `Hey ${session.name}, welcome to ${session.room}` })
         socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has joined` })
         socket.join(session.room)
-        //const [rooms, roomRemains] = addRoom(session.room)
-        const rooms = addRoom(session.room)
+
+        const rooms = roomParameters.map(element => {const room = {roomName: element.roomName, status: element.status}; return room})
+        console.log(rooms, 'all rooms')
         sessions.forEach(element => {
             io.sockets.connected[element.id].emit('allRooms', rooms)
         });
@@ -91,8 +99,7 @@ io.on('connection', (socket) => {
         updateSessions(session)
 
         io.to(session.room).emit('userNames', { room: session.room, users: getUsersInRoom(session.room) })
-
-        if(typeof callback === "function") callback();
+        callback()
     })
 
     socket.on('sendMessage', (message, callback) => {
@@ -101,11 +108,14 @@ io.on('connection', (socket) => {
         callback()
     })
 
-    // when the client disconnects, we broadcast it to others
+    // when the client disconnects, broadcast it to others
     socket.on('disconnect', () => {
         console.log(`User has left`)
-        const [session, rooms] = removeSession(socket.id);
-        console.log(session, rooms, 'cp-6')
+        const [session, roomParameters] = removeSession(socket.id);
+        
+        console.log(session, roomParameters, 'cp-6')
+        
+        const rooms = roomParameters.map(element => {const room = {roomName: element.roomName, status: element.status}; return room})
         if (session) {
             console.log(session.name, 'has left')
             socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has left` })
@@ -124,11 +134,12 @@ io.on('connection', (socket) => {
     });
 
     // when the client emits 'stop typing', we broadcast it to others
-    socket.on('stopTyping', () => {
+    socket.on('stop typing', () => {
         console.log('i stopped typing')
-        socket.broadcast.to(session.room).emit('stopTyping', { session: session.name })
+        socket.broadcast.to(session.room).emit('stop typing', { session: session.name })
     });
 })
 
 app.use(router)
 server.listen(port, () => console.log(`Server is listening on ${port}`))
+
