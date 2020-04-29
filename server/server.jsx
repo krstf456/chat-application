@@ -40,35 +40,7 @@ app.use(cookieSession({
 //1. Creates a new room if the room does not exist
 //2. If rooms exits checks rooms status
 //3. If locked checks password
-app.post('/rooms', async (req, res) => {
-    const roomParam = roomParameters.find(roomParam => roomParam.roomName === req.body.roomName)
-    if (roomParam) { //room with same name exists
-        if (roomParam.status === req.body.status) {
-            if (roomParam.status === false) {
-                return res.status(200).json('Enter room success')
-            }
-            else {
-                if (!await bcrypt.compare(req.body.password, roomParam.password)) {
-                    return res.status(401).json({ error: 'Wrong room name or password' })
-                } else {
-                    return res.status(200).json('Enter room success')
-                }
-            }
-        }
-        return res.status(401).json({ error: 'Room exists with different locked status' })
-    } else {//room is new
-        newRoom = {
-            roomName: req.body.roomName,
-            status: req.body.status
-        }
-        if (req.body.password) {
-            newRoom.password = await bcrypt.hash(req.body.password, 10)
-        }
-        roomParameters.push(newRoom)
-        return res.status(200).json('Enter room success')
-    }
-}
-)
+
 
 const updateSessions = (session) => {
     roomsWithUser = getRoomsWithUser(session.name)
@@ -109,36 +81,7 @@ io.on('connection', (socket) => {
     })
 
     // when the client disconnects, broadcast it to others
-    socket.on('disconnect', () => {
-        console.log(`User has left`)
-        const [session, roomParameters] = removeSession(socket.id);
-        
-        console.log(session, roomParameters, 'cp-6')
-        
-        const rooms = roomParameters.map(element => {const room = {roomName: element.roomName, status: element.status}; return room})
-        if (session) {
-            console.log(session.name, 'has left')
-            socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has left` })
-            io.to(session.room).emit('userNames', { room: session.room, users: getUsersInRoom(session.room) });
-            sessions.forEach(element => {
-                io.sockets.connected[element.id].emit('allRooms', rooms)
-            });
-            updateSessions(session)
-        }
-    })
 
-    // when the client emits 'typing', we broadcast it to others
-    socket.on('emitTyping', () => {
-        console.log('im typing')
-        socket.broadcast.to(session.room).emit('emitTyping', { session: session.name })
-    });
-
-    // when the client emits 'stop typing', we broadcast it to others
-    socket.on('stop typing', () => {
-        console.log('i stopped typing')
-        socket.broadcast.to(session.room).emit('stop typing', { session: session.name })
-    });
-})
 
 app.use(router)
 server.listen(port, () => console.log(`Server is listening on ${port}`))
