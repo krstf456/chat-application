@@ -1,13 +1,6 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { Unlock, Lock, FormSubtract, FormAdd, Group, StatusGoodSmall, ChatOption } from 'grommet-icons';
 import { Accordion, AccordionPanel, Box, Heading, Text, ThemeContext, Layer, Button } from 'grommet';
-=======
-import React, { useState } from 'react';
-import { Unlock, Lock, FormSubtract, FormAdd, Group, StatusGoodSmall, ChatOption, Chat} from 'grommet-icons';
-import { Accordion, AccordionPanel, Box, Heading, Text, ThemeContext } from 'grommet';
-import { Link } from 'react-router-dom'
->>>>>>> master
 import backgroundImage from '../../Assets/background.jpg'
 import DisplayLists from './DisplayLists'
 import {FormClose, StatusWarning} from "grommet-icons";
@@ -47,7 +40,6 @@ const RichPanel = ({ children, icon, label }) => {
     );
 };
 
-<<<<<<< HEAD
 const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom, logout }) => {
     const [proceed, setProceed] = useState(undefined);
     const [lockedValues, setLockedValues] = useState('');
@@ -66,9 +58,6 @@ const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom, lo
             submitForm(values)
         }
     }
-=======
-const SideBar = ({ users, userRooms, allRooms, joinRoom, name }) => {
->>>>>>> master
 
     const getPassword = (room) => {
         if (room === currentRoom) {
@@ -157,36 +146,7 @@ const SideBar = ({ users, userRooms, allRooms, joinRoom, name }) => {
                             <DisplayLists displayItem={lockedRooms} changeChat={getPassword} />
                         </RichPanel>
                         <RichPanel icon={<Unlock color="brand" />} label="Unlocked Rooms">
-<<<<<<< HEAD
                             <DisplayLists displayItem={unlockedRooms} changeChat={changeChat} />
-=======
-                            <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
-                                <Box gap="xsmall">
-                                    <Text color="dark-3">
-                                        {
-                                            allRooms
-                                                ? (
-                                                    <Box>
-
-                                                        {
-                                                            allRooms.map((room) => (
-                                                                <Link to={`/chat?name=${name}&room=${room}`} target="_blank">
-
-                                                                <Text key={room} >
-                                                                    <StatusGoodSmall  style={{cursor: 'pointer'}} color='status-ok' size='small' />
-                                                                    <strong> {room}</strong>
-                                                                </Text>
-                                                                </Link>
-                                                            ))
-                                                        }
-                                                    </Box>
-                                                )
-                                                : null
-                                        }
-                                    </Text>
-                                </Box>
-                            </Box>
->>>>>>> master
                         </RichPanel>
                         <RichPanel icon={<ChatOption color="brand" />} label="Your Rooms">
                             <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>

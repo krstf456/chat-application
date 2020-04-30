@@ -10,7 +10,6 @@ const app = express()
 const server = http.createServer(app)
 const io = socketio(server)
 
-<<<<<<< HEAD
 //Allow cors between 3000 and 5000
 const cors = require('cors');
 
@@ -81,17 +80,6 @@ app.post('/switch', async (req, res) => {
     }
 })
 
-=======
-io.eio.pingTimeout = 120000; // 2 minutes
-// io.eio.pingInterval = 5000;  // 5 seconds
-
-const cors = require('cors');
-
-const bcrypt = require('bcrypt')
-const cookieSession = require('cookie-session')
-
-const { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, addRoom, sessions } = require('./sessions')
->>>>>>> master
 
 app.use(cors());
 app.use(express.json())
@@ -154,16 +142,11 @@ io.on('connection', (socket) => {
         socket.emit('message', { session: 'admin', text: `Hey ${session.name}, welcome to ${session.room}` })
         socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has joined` })
         socket.join(session.room)
-<<<<<<< HEAD
         console.log(io.sockets.adapter.rooms, 'checkpoint')
         console.log(Object.keys(socket.rooms), 'checkpoint-2')
         // console.log(io.sockets.adapter.rooms['1'], 'checkpoint-3')
         const rooms = roomParameters.map(element => { const room = { roomName: element.roomName, status: element.status }; return room })
         // console.log(rooms, 'all rooms')
-=======
-        //const [rooms, roomRemains] = addRoom(session.room)
-        const rooms = addRoom(session.room)
->>>>>>> master
         sessions.forEach(element => {
             io.sockets.connected[element.id].emit('allRooms', rooms)
         });
@@ -230,28 +213,16 @@ io.on('connection', (socket) => {
     })
 
     // when the client emits 'typing', we broadcast it to others
-<<<<<<< HEAD
     socket.on('typing', (name) => {
         const session = getSession(socket.id)
         io.to(session.room).emit('typing', name)
-=======
-    socket.on('emitTyping', () => {
-        console.log('im typing')
-        socket.broadcast.to(session.room).emit('emitTyping', { session: session.name })
->>>>>>> master
     });
 
 
     // when the client emits 'stop typing', we broadcast it to others
-<<<<<<< HEAD
     socket.on('stop typing', (name) => {
         const session = getSession(socket.id)
         io.to(session.room).emit('stop typing', name)
-=======
-    socket.on('stopTyping', () => {
-        console.log('i stopped typing')
-        socket.broadcast.to(session.room).emit('stopTyping', { session: session.name })
->>>>>>> master
     });
 })
 
