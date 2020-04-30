@@ -11,15 +11,15 @@ const addSession = ({ id, name, room }) => {
 }
 
 const removeSession = (id) => {
-    console.log(sessions, 'test')
     const index = sessions.findIndex((session) => session.id === id)
     const session = sessions.find((session) => session.id === id)
-    console.log(session)
     if (index !== -1) {
         const sessionsRemain = sessions.splice(index, 1)[0]
         console.log(sessionsRemain)
         const roomsRemain = removeRoom(session.room)
         return [sessionsRemain, roomsRemain]
+    }else{
+        return [sessions, roomParameters]
     }
 }
 

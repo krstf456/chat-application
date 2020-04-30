@@ -4,7 +4,7 @@ import io from 'socket.io-client'
 import ChatBoxHeader from './ChatBoxHeader'
 import Input from '../Input/Input'
 import SideBar from './SideBar'
-import { Box, ResponsiveContext, Footer } from 'grommet'
+import { Box, ResponsiveContext, Footer, Text } from 'grommet'
 
 const socket = io.connect('localhost:5000')
 const ChatPage = ({ user, roomName, setChat, submitForm }) => {
@@ -15,33 +15,32 @@ const ChatPage = ({ user, roomName, setChat, submitForm }) => {
     const [users, setUsers] = useState('')
     const [userRooms, setUserRooms] = useState('')
     const [allRooms, setAllRooms] = useState([])
+    const [typingMessage, setTypingMessage] = useState('')
 
     const size = useContext(ResponsiveContext)
     useEffect(() => {
-        // const { name, room } = {user, roomName}
-        // console.log(socket.server.eio.clients, 'test')
-        // setName(user)
-        // setRoom(roomName)
+
         console.log(name, room)
         socket.emit('join', { name, room }, () => {
         })
-        // socket.on("disconnect", () => {
-        //     console.log("Disconnected from server")
-        // })
+        socket.on("disconnect", () => {
+            console.log("Disconnected from server")
+        })
+
     }, [])
 
     // useEffect(() => {
-
-    //     return () => {
-    //       socket.emit("disconnect");
-    //     };
-    //   }, []);
+    //     
+    // }, []);
 
     useEffect(() => {
         socket.on('message', message => {
+            setTypingMessage('')
             setMessages(messages => [...messages, message]);
 
         });
+
+
         socket.on("userNames", ({ users }) => {
             setUsers(users);
         })
@@ -53,24 +52,53 @@ const ChatPage = ({ user, roomName, setChat, submitForm }) => {
             console.log(allRooms, 'all rooms')
         })
 
+        socket.on("stop typing", (data) => {
+            console.log(data)
+            setTypingMessage('')
+        })
+
+        socket.on("typing", (typist) => {
+            if (typist !== name) {
+                setTypingMessage(`${typist} is typing`)
+            }
+        })
+
     }, [])
 
     const sendMessage = (event) => {
         event.preventDefault()
+        setTypingMessage('')
+        //handleTyping(false)
         if (message) {
             socket.emit('sendMessage', message, room, () => setMessage(''))
         }
     }
+
     const logout = () => {
-        setChat(false)
-       socket.emit('leaveRoom')
+        socket.emit('leaveRoom')
     }
 
+    const backToHomePage = () => {
+        setChat(false)
+        socket.emit('leaveRoom')
+    }
+
+    const handleTyping = (typing) => {
+        if (typing) {
+            socket.emit('typing', name)
+        }
+        else {
+            socket.emit('stop typing', name)
+        }
+    }
+
+
+    // console.log(typing)
 
     return (
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
             <Box style={size === 'small' ? { display: 'none' } : { display: 'block' }}>
-                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} name={name} currentRoom={room} submitForm={submitForm} logout={logout} />
+                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} name={name} currentRoom={room} submitForm={submitForm} logout={logout} backToHomePage={backToHomePage} />
             </Box>
             <Box direction='column' fill='horizontal'>
                 <Box>
@@ -78,12 +106,15 @@ const ChatPage = ({ user, roomName, setChat, submitForm }) => {
                         roomName={room}
                         messages={messages}
                         name={name}
-                        logout={logout}
+                        logout={backToHomePage}
                     />
                 </Box>
+                <Text>{typingMessage}</Text>
                 <Footer justify='center'
                     alignSelf='center'>
-                    <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
+                    <Input message={message} setMessage={setMessage} sendMessage={sendMessage}
+                        handleTyping={handleTyping}
+                    />
                 </Footer>
             </Box>
         </Box>

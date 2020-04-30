@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Button, TextInput } from 'grommet'
 
-const Input = ({ message, setMessage, sendMessage }) => {
+const Input = ({ message, setMessage, sendMessage, handleTyping}) => {
     return (
         <Box
             direction='row'
@@ -12,7 +12,14 @@ const Input = ({ message, setMessage, sendMessage }) => {
                 <TextInput
                     value={message}
                     placeholder='Enter your message'
-                    onChange={(event) => setMessage(event.target.value)}
+                    onChange={(event) => {
+                        setMessage(event.target.value)
+                        if (event.target.value.length > 0) {
+                            handleTyping(true)
+                        } else {
+                            handleTyping(false)
+                        }
+                    }}
                     onKeyPress={(event) => event.key === 'Enter' ? sendMessage(event) : null} />
 
             </Box>

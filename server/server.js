@@ -111,59 +111,65 @@ io.on('connection', (socket) => {
         callback()
     })
 
+    const handleUserExit = (session_id) => {
+        const [session, roomParameters] = removeSession(socket.id);
+        if (session !== undefined) {
+            const rooms = roomParameters.map(element => { const room = { roomName: element.roomName, status: element.status }; return room })
+            if (session) {
+                socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has left` })
+                io.to(session.room).emit('userNames', { room: session.room, users: getUsersInRoom(session.room) });
+                sessions.forEach(element => {
+                    io.sockets.connected[element.id].emit('allRooms', rooms)
+                });
+                updateSessions(session)
+                socket.leave(session.room)
+            }
+        }
+
+    }
+    
     // when the client leaves, broadcast it to others
     socket.on('leaveRoom', () => {
-
-        console.log(`User has left`)
-        const [session, roomParameters] = removeSession(socket.id);
-
-        console.log(session, roomParameters, 'cp-6')
-
-        const rooms = roomParameters.map(element => { const room = { roomName: element.roomName, status: element.status }; return room })
-        if (session) {
-            console.log(session.name, 'has left')
-
-            socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has left` })
-            io.to(session.room).emit('userNames', { room: session.room, users: getUsersInRoom(session.room) });
-            sessions.forEach(element => {
-                io.sockets.connected[element.id].emit('allRooms', rooms)
-            });
-            updateSessions(session)
-            socket.leave(session.room)
-        }
+        handleUserExit(socket.id)
     })
     // when the client leaves, broadcast it to others
     socket.on('disconnect', () => {
+        console.log('disconnect')
+        handleUserExit(socket.id)
 
-        console.log(`User has left`)
-        const [session, roomParameters] = removeSession(socket.id);
+        // console.log(`User has left`)
+        // const [session, roomParameters] = removeSession(socket.id);
 
-        console.log(session, roomParameters, 'cp-6')
+        // if (session !== undefined) {
+        //     console.log(session, roomParameters, 'cp-6')
 
-        const rooms = roomParameters.map(element => { const room = { roomName: element.roomName, status: element.status }; return room })
-        if (session) {
-            console.log(session.name, 'has left')
+        //     const rooms = roomParameters.map(element => { const room = { roomName: element.roomName, status: element.status }; return room })
+        //     if (session) {
+        //         console.log(session.name, 'has left')
 
-            socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has left` })
-            io.to(session.room).emit('userNames', { room: session.room, users: getUsersInRoom(session.room) });
-            sessions.forEach(element => {
-                io.sockets.connected[element.id].emit('allRooms', rooms)
-            });
-            updateSessions(session)
-            socket.leave(session.room)
-        }
+        //         socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has left` })
+        //         io.to(session.room).emit('userNames', { room: session.room, users: getUsersInRoom(session.room) });
+        //         sessions.forEach(element => {
+        //             io.sockets.connected[element.id].emit('allRooms', rooms)
+        //         });
+        //         updateSessions(session)
+        //         socket.leave(session.room)
+        //     }
+
+        // }
     })
 
     // when the client emits 'typing', we broadcast it to others
-    socket.on('typing', () => {
-        console.log('im typing')
-        socket.broadcast.to(session.room).emit('typing', { session: session.name })
+    socket.on('typing', (name) => {
+        const session = getSession(socket.id)
+        io.to(session.room).emit('typing', name)
     });
 
+
     // when the client emits 'stop typing', we broadcast it to others
-    socket.on('stop typing', () => {
-        console.log('i stopped typing')
-        socket.broadcast.to(session.room).emit('stop typing', { session: session.name })
+    socket.on('stop typing', (name) => {
+        const session = getSession(socket.id)
+        io.to(session.room).emit('stop typing', name)
     });
 })
 

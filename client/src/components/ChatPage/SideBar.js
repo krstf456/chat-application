@@ -3,6 +3,7 @@ import { Unlock, Lock, FormSubtract, FormAdd, Group, StatusGoodSmall, ChatOption
 import { Accordion, AccordionPanel, Box, Heading, Text, ThemeContext } from 'grommet';
 import backgroundImage from '../../Assets/background.jpg'
 import { Link } from 'react-router-dom'
+import DisplayLists from './DisplayLists'
 
 const richAccordionTheme = {
     accordion: {
@@ -39,7 +40,7 @@ const RichPanel = ({ children, icon, label }) => {
     );
 };
 
-const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom,logout }) => {
+const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom, logout, backToHomePage }) => {
     const changeChat = (room) => {
         if (room === currentRoom) {
             console.log('same room')
@@ -51,10 +52,24 @@ const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom,log
             console.log('here')
             logout()
             submitForm(values)
-            
-            
+
+
         }
     }
+
+    const getPassword = (room) => {
+        if (room === currentRoom) {
+            console.log('same room')
+        }
+        else {
+            const password = prompt("Please enter password", "password")
+            const values =
+                { lockedStatus: true, name: name, room: room, password: password }
+            backToHomePage()
+            submitForm(values)
+        }
+    }
+
 
     const lockedRooms = allRooms.filter(element => element.status === true).map(element => element.roomName)
     const unlockedRooms = allRooms.filter(element => element.status === false).map(element => element.roomName)
@@ -84,68 +99,10 @@ const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom,log
                 <ThemeContext.Extend value={richAccordionTheme}>
                     <Accordion>
                         <RichPanel icon={<Lock color="brand" />} label="Locked Rooms">
-                            <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
-                                <Box gap="xsmall">
-                                    <Text color="dark-3">
-                                        {
-                                            lockedRooms.length > 0
-                                                ? (
-                                                    <Box>
-
-                                                        {
-                                                            lockedRooms.map((room) => (
-                                                                <Text key={room}>
-                                                                    <StatusGoodSmall color='status-ok' size='small' />
-                                                                    <strong> {room}</strong>
-                                                                </Text>
-                                                            ))
-                                                        }
-                                                    </Box>
-                                                )
-                                                : (
-                                                    <Box>
-                                                        <Text>
-                                                            No rooms available
-                                                         </Text>
-                                                    </Box>
-                                                )
-                                        }
-                                    </Text>
-                                </Box>
-                            </Box>
+                            <DisplayLists displayItem={lockedRooms} changeChat={getPassword} />
                         </RichPanel>
                         <RichPanel icon={<Unlock color="brand" />} label="Unlocked Rooms">
-                            <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
-                                <Box gap="xsmall">
-                                    <Text color="dark-3">
-                                        {
-                                            unlockedRooms.length > 0
-                                                ? (
-                                                    <Box>
-
-                                                        {
-                                                            unlockedRooms.map((room) => (
-
-                                                                <Text key={room} onClick={() => { changeChat(room) }}>
-                                                                    <StatusGoodSmall color='status-ok' size='small' />
-                                                                    <strong> {room}</strong>
-                                                                </Text>
-
-                                                            ))
-                                                        }
-                                                    </Box>
-                                                )
-                                                : (
-                                                    <Box>
-                                                        <Text>
-                                                            No rooms available
-                                                         </Text>
-                                                    </Box>
-                                                )
-                                        }
-                                    </Text>
-                                </Box>
-                            </Box>
+                            <DisplayLists displayItem={unlockedRooms} changeChat={changeChat} />
                         </RichPanel>
                         <RichPanel icon={<ChatOption color="brand" />} label="Your Rooms">
                             <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
@@ -156,7 +113,7 @@ const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom,log
                                                 <Box>
                                                     {
                                                         userRooms.map(({ room }) => (
-                                                            <Text key={room}>
+                                                            <Text>
                                                                 <StatusGoodSmall color='status-ok' size='small' />
                                                                 <strong> {room}</strong>
                                                             </Text>
@@ -187,12 +144,12 @@ const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom,log
                                         )
                                         : null
                                 }
-
                             </Box>
                         </RichPanel>
                     </Accordion>
                 </ThemeContext.Extend>
             </Box>
+
         </Box>
     );
 };
