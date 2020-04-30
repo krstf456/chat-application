@@ -10,6 +10,26 @@ const addSession = ({ id, name, room }) => {
     return { session }
 }
 
+<<<<<<< HEAD
+=======
+const addRoom = (room) => {
+    const doesRoomExist = rooms.includes(room)
+    if (doesRoomExist === false) {
+        rooms.push(room)
+    }
+    // const index = rooms.indexOf(room)
+    
+    // let roomRemains    
+    // if (index !== -1) {
+    //         const roomRemains = rooms.splice(index, 1)[0]
+    //        console.log(roomRemains, 'bug')
+    //         //return [roomRemains]
+    //     }
+
+    return rooms
+}
+
+>>>>>>> master
 const removeSession = (id) => {
     const index = sessions.findIndex((session) => session.id === id)
     const session = sessions.find((session) => session.id === id)

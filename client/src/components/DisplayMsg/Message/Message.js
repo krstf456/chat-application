@@ -1,11 +1,20 @@
 import React from 'react';
 import { Box, Text } from "grommet";
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> master
 const Message = ({ message: { text, session }, name }) => {
     let isSentByCurrentUser = false;
 
     const trimmedName = name.trim().toLowerCase();
+<<<<<<< HEAD
     console.log(session, name)
+=======
+
+>>>>>>> master
     if (session === trimmedName) {
         isSentByCurrentUser = true;
        

@@ -2,6 +2,7 @@ const express = require('express')
 const socketio = require('socket.io')
 const http = require('http')
 
+
 const port = process.env.port || 5000
 const router = require('./router')
 
@@ -9,6 +10,7 @@ const app = express()
 const server = http.createServer(app)
 const io = socketio(server)
 
+<<<<<<< HEAD
 //Allow cors between 3000 and 5000
 const cors = require('cors');
 
@@ -79,6 +81,58 @@ app.post('/switch', async (req, res) => {
     }
 })
 
+=======
+io.eio.pingTimeout = 120000; // 2 minutes
+// io.eio.pingInterval = 5000;  // 5 seconds
+
+const cors = require('cors');
+
+const bcrypt = require('bcrypt')
+const cookieSession = require('cookie-session')
+
+const { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser, addRoom, sessions } = require('./sessions')
+>>>>>>> master
+
+app.use(cors());
+app.use(express.json())
+app.use(cookieSession({
+    secret: 'aVeryS3cr3tK3y',
+    maxAge: 1000 * 10, // 10s
+    sameSite: 'strict',
+    httpOnly: true,
+    secure: false,
+}))
+
+
+app.post('/rooms', async (req, res) => {
+    const roomParam = roomParameters.find(roomParam => roomParam.roomName === req.body.roomName)
+    if (roomParam) { //room with same name exists
+        if (roomParam.status === req.body.status) {
+            if (roomParam.status === false) {
+                return res.status(200).json('Enter room success')
+            }
+            else {
+                if (!await bcrypt.compare(req.body.password, roomParam.password)) {
+                    return res.status(401).json({ error: 'Wrong room name or password' })
+                } else {
+                    return res.status(200).json('Enter room success')
+                }
+            }
+        }
+        return res.status(401).json({ error: 'Room exists with different locked status' })
+    } else {//room is new
+        newRoom = {
+            roomName: req.body.roomName,
+            status: req.body.status
+        }
+        if (req.body.password) {
+            newRoom.password = await bcrypt.hash(req.body.password, 10)
+        }
+        roomParameters.push(newRoom)
+        return res.status(200).json('Enter room success')
+    }
+}
+)
 
 const updateSessions = (session) => {
     roomsWithUser = getRoomsWithUser(session.name)
@@ -100,11 +154,16 @@ io.on('connection', (socket) => {
         socket.emit('message', { session: 'admin', text: `Hey ${session.name}, welcome to ${session.room}` })
         socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has joined` })
         socket.join(session.room)
+<<<<<<< HEAD
         console.log(io.sockets.adapter.rooms, 'checkpoint')
         console.log(Object.keys(socket.rooms), 'checkpoint-2')
         // console.log(io.sockets.adapter.rooms['1'], 'checkpoint-3')
         const rooms = roomParameters.map(element => { const room = { roomName: element.roomName, status: element.status }; return room })
         // console.log(rooms, 'all rooms')
+=======
+        //const [rooms, roomRemains] = addRoom(session.room)
+        const rooms = addRoom(session.room)
+>>>>>>> master
         sessions.forEach(element => {
             io.sockets.connected[element.id].emit('allRooms', rooms)
         });
@@ -112,7 +171,8 @@ io.on('connection', (socket) => {
         updateSessions(session)
 
         io.to(session.room).emit('userNames', { room: session.room, users: getUsersInRoom(session.room) })
-        callback()
+
+        if(typeof callback === "function") callback();
     })
 
     socket.on('sendMessage', (message, room, callback) => {
@@ -170,16 +230,28 @@ io.on('connection', (socket) => {
     })
 
     // when the client emits 'typing', we broadcast it to others
+<<<<<<< HEAD
     socket.on('typing', (name) => {
         const session = getSession(socket.id)
         io.to(session.room).emit('typing', name)
+=======
+    socket.on('emitTyping', () => {
+        console.log('im typing')
+        socket.broadcast.to(session.room).emit('emitTyping', { session: session.name })
+>>>>>>> master
     });
 
 
     // when the client emits 'stop typing', we broadcast it to others
+<<<<<<< HEAD
     socket.on('stop typing', (name) => {
         const session = getSession(socket.id)
         io.to(session.room).emit('stop typing', name)
+=======
+    socket.on('stopTyping', () => {
+        console.log('i stopped typing')
+        socket.broadcast.to(session.room).emit('stopTyping', { session: session.name })
+>>>>>>> master
     });
 })
 
