@@ -59,7 +59,7 @@ const ChatPage = ({ user, roomName, setChat, submitForm}) => {
 
         socket.on("typing", (typist) => {
             if (typist !== name) {
-                setTypingMessage(`${typist} is typing`)
+                setTypingMessage(`${typist} is typing..`)
             }
         })
 
@@ -116,7 +116,16 @@ const ChatPage = ({ user, roomName, setChat, submitForm}) => {
                         logout={backToHomePage}
                     />
                 </Box>
-                <Text>{typingMessage}</Text>
+                <Box
+                alignSelf='center'
+                background="linear-gradient(102.77deg, #F2F2F2 -9.18%, #999999 209.09%)"
+                round='small'
+                
+                style={{padding: '0 5px'}}
+
+                >
+                {typingMessage}
+                </Box>
                 <Footer justify='center'
                     alignSelf='center'>
                     <Input message={message} setMessage={setMessage} sendMessage={sendMessage}
