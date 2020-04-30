@@ -21,6 +21,7 @@ const Input = ({ message, setMessage, sendMessage, handleTyping}) => {
                         }
                     }}
                     onKeyPress={(event) => event.key === 'Enter' ? sendMessage(event) : null} />
+
             </Box>
             <Box
                 justify='center'

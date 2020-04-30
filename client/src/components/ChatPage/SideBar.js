@@ -17,6 +17,7 @@ const richAccordionTheme = {
 const RichPanel = ({ children, icon, label }) => {
     const [hovering, setHovering] = useState(false);
 
+
     const renderPanelTitle = () => (
         <Box direction="row" align="center" gap="small" pad={{ horizontal: 'small' }}>
             {icon}
@@ -68,7 +69,6 @@ const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom, lo
             setLockedValues({ lockedStatus: true, name: name, room: room, password: password })
         }
     }
-
     const authenticatePassword = async (room, password) => {
         setError(false)
         try {
@@ -221,7 +221,9 @@ const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom, lo
                     </Box>
                 </Layer>
             )}
+
         </Box>
+
     );
 };
 

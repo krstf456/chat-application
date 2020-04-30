@@ -4,6 +4,7 @@ const roomParameters = []
 const addSession = ({ id, name, room }) => {
     name = name.trim().toLowerCase()
     room = room.trim().toLowerCase()
+    // console.log(name, room)
     const session = { id, name, room }
     sessions.push(session)
     return { session }
@@ -26,7 +27,10 @@ const removeRoom = (room) => {
     const checkIfEmpty = sessions.find((session) => session.room === room)
     console.log(checkIfEmpty, 'cp-2')
     if (checkIfEmpty === undefined) {
+        
         const index = roomParameters.map(function (e) { return e.roomName; }).indexOf(room)
+
+        // const index = rooms.indexOf(room);
         console.log(roomParameters, index, 'cp-4')
         if (index > -1) {
             roomParameters.splice(index, 1)
