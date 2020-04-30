@@ -120,6 +120,9 @@ const ChatPage = ({ user, roomName, setChat, submitForm}) => {
                 alignSelf='center'
                 background="linear-gradient(102.77deg, #F2F2F2 -9.18%, #999999 209.09%)"
                 round='small'
+                
+                style={{padding: '0 5px'}}
+
                 >
                 {typingMessage}
                 </Box>
