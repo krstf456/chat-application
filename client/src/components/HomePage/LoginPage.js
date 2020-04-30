@@ -1,11 +1,9 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-
 import { useState } from 'react'
 import backgroundImage from '../../Assets/background.jpg'
-import { Box, Button, Form, FormField, TextInput, CheckBox, Layer, Text } from "grommet";
+import { Box, Button, Form, FormField, TextInput, CheckBox} from "grommet";
 
-const LoginPage = ({ submitForm, showError,errorMessage }) => {
+const LoginPage = ({ submitForm}) => {
     const [locked, setLock] = useState(false);
     return (
         <Box align='center' justify='center' height='100vh'

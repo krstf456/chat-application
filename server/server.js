@@ -70,6 +70,16 @@ app.post('/rooms', async (req, res) => {
 }
 )
 
+app.post('/switch', async (req, res) => {
+    const roomParam = roomParameters.find(roomParam => roomParam.roomName === req.body.roomName)
+    if (!await bcrypt.compare(req.body.password, roomParam.password)) {
+        return res.status(401).json({ error: 'Wrong room name or password' })
+    } else {
+        return res.status(200).json('Enter room success')
+    }
+})
+
+
 const updateSessions = (session) => {
     roomsWithUser = getRoomsWithUser(session.name)
     sessions.forEach(element => {

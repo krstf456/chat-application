@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Unlock, Lock, FormSubtract, FormAdd, Group, StatusGoodSmall, ChatOption, Chat } from 'grommet-icons';
-import { Accordion, AccordionPanel, Box, Heading, Text, ThemeContext } from 'grommet';
+import React, { useState, useEffect } from 'react';
+import { Unlock, Lock, FormSubtract, FormAdd, Group, StatusGoodSmall, ChatOption } from 'grommet-icons';
+import { Accordion, AccordionPanel, Box, Heading, Text, ThemeContext, Layer, Button } from 'grommet';
 import backgroundImage from '../../Assets/background.jpg'
-import { Link } from 'react-router-dom'
 import DisplayLists from './DisplayLists'
+import {FormClose, StatusWarning} from "grommet-icons";
 
 const richAccordionTheme = {
     accordion: {
@@ -40,7 +40,12 @@ const RichPanel = ({ children, icon, label }) => {
     );
 };
 
-const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom, logout, backToHomePage }) => {
+const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom, logout }) => {
+    const [proceed, setProceed] = useState(undefined);
+    const [lockedValues, setLockedValues] = useState('');
+    const [error, setError] = useState(false);
+    const onClose = () => setError(undefined);
+    const [errorMessage, setErrorMessage] = useState('')
     const changeChat = (room) => {
         if (room === currentRoom) {
             console.log('same room')
@@ -48,12 +53,9 @@ const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom, lo
         else {
             const values =
                 { lockedStatus: false, name: name, room: room }
-
             console.log('here')
             logout()
             submitForm(values)
-
-
         }
     }
 
@@ -63,13 +65,55 @@ const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom, lo
         }
         else {
             const password = prompt("Please enter password", "password")
-            const values =
-                { lockedStatus: true, name: name, room: room, password: password }
-            backToHomePage()
-            submitForm(values)
+            authenticatePassword(room, password)
+            setLockedValues({ lockedStatus: true, name: name, room: room, password: password })
+        }
+    }
+    const authenticatePassword = async (room, password) => {
+        setError(false)
+        try {
+            fetch('http://localhost:5000/switch', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    roomName: room,
+                    password: password,
+                })
+            }).then(function (response) {
+                return response.json();
+            }).then(function (parsedJson) {
+                console.log(parsedJson)
+                if (parsedJson.error) {
+                    console.log('This is the parsed json', parsedJson);
+                    setError(true);
+                    setProceed(false)
+                    setErrorMessage(parsedJson.error)
+                }
+                else {
+                    console.log('ok')
+                    console.log(name, room, 'test534')
+                    setProceed(true)
+                }
+            })
+        } catch (error) {
+            console.log(error, 'test')
         }
     }
 
+    useEffect(() => {
+
+        if (proceed !== undefined) {
+            if (proceed) {
+                logout()
+                submitForm(lockedValues)
+            }
+            else {
+            }
+        }
+    }, [proceed])
 
     const lockedRooms = allRooms.filter(element => element.status === true).map(element => element.roomName)
     const unlockedRooms = allRooms.filter(element => element.status === false).map(element => element.roomName)
@@ -149,8 +193,37 @@ const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom, lo
                     </Accordion>
                 </ThemeContext.Extend>
             </Box>
+            {error && (
+                <Layer
+                    position="bottom"
+                    modal={false}
+                    margin={{ vertical: "medium", horizontal: "small" }}
+                    onEsc={onClose}
+                    onClickOutside={onClose}
+                    responsive={false}
+                    plain
+                >
+                    <Box
+                        align="center"
+                        direction="row"
+                        gap="small"
+                        justify="between"
+                        round="medium"
+                        elevation="medium"
+                        pad={{ vertical: "xsmall", horizontal: "small" }}
+                        background="status-warning"
+                    >
+                        <Box align="center" direction="row" gap="xsmall">
+                            <StatusWarning />
+                            <Text>{errorMessage}</Text>
+                        </Box>
+                        <Button icon={<FormClose />} onClick={onClose} plain />
+                    </Box>
+                </Layer>
+            )}
 
         </Box>
+
     );
 };
 

@@ -1,8 +1,8 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import LoginPage from './LoginPage'
 import ChatPage from '../ChatPage/ChatPage'
-import { Add, FormClose, StatusGood, Update } from "grommet-icons";
+import { FormClose, StatusWarning } from "grommet-icons";
 import { Box, Button, Layer, Text } from "grommet";
 
 const HomePage = () => {
@@ -58,19 +58,13 @@ const HomePage = () => {
         }
     }
 
-    // useEffect(() => {
-        
-    //     return () => {
-    //         console.log(room, name, 'test123')
-    //        displayPage()
-    //     }
-    // }, [update])
+
 
     const displayPage = () => {
         let displayPage = <LoginPage submitForm={submitForm} showError={error} />
         if (chat) {
             displayPage = <ChatPage user={name} roomName={room} setChat={setChat} submitForm={submitForm} />
-            
+
         }
         return displayPage
     }
@@ -83,6 +77,7 @@ const HomePage = () => {
                     modal={false}
                     margin={{ vertical: "medium", horizontal: "small" }}
                     onEsc={onClose}
+                    onClickOutside={onClose}
                     responsive={false}
                     plain
                 >
@@ -94,10 +89,10 @@ const HomePage = () => {
                         round="medium"
                         elevation="medium"
                         pad={{ vertical: "xsmall", horizontal: "small" }}
-                        background="status-ok"
+                        background="status-warning"
                     >
                         <Box align="center" direction="row" gap="xsmall">
-                            <StatusGood />
+                            <StatusWarning />
                             <Text>{errorMessage}</Text>
                         </Box>
                         <Button icon={<FormClose />} onClick={onClose} plain />

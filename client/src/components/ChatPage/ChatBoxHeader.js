@@ -1,9 +1,7 @@
 import React from 'react'
-import { Header, Heading, Button, Main, Footer, Box } from 'grommet'
+import { Header, Heading, Button, Main, Box } from 'grommet'
 import { Logout } from 'grommet-icons';
-import { Link } from 'react-router-dom'
 import DisplayMsg from '../DisplayMsg/DisplayMsg'
-import Input from '../Input/Input'
 
 const ChatBoxHeader = ({ roomName, messages, name, logout}) => {
     // console.log(name)

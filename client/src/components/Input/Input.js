@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, TextInput } from 'grommet'
+import { Box, TextInput } from 'grommet'
 
 const Input = ({ message, setMessage, sendMessage, handleTyping}) => {
     return (

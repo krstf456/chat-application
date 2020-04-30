@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react'
-import queryString from 'query-string'
 import io from 'socket.io-client'
 import ChatBoxHeader from './ChatBoxHeader'
 import Input from '../Input/Input'
 import SideBar from './SideBar'
-import { Box, ResponsiveContext, Footer, Text } from 'grommet'
+import { Box, ResponsiveContext, Footer, Text} from 'grommet'
+
 
 const socket = io.connect('localhost:5000')
-const ChatPage = ({ user, roomName, setChat, submitForm }) => {
+const ChatPage = ({ user, roomName, setChat, submitForm}) => {
     const [name, setName] = useState(user)
     const [room, setRoom] = useState(roomName)
     const [message, setMessage] = useState('')
@@ -98,7 +98,13 @@ const ChatPage = ({ user, roomName, setChat, submitForm }) => {
     return (
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
             <Box style={size === 'small' ? { display: 'none' } : { display: 'block' }}>
-                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} name={name} currentRoom={room} submitForm={submitForm} logout={logout} backToHomePage={backToHomePage} />
+                <SideBar users={users} 
+                userRooms={userRooms} 
+                allRooms={allRooms} 
+                name={name} 
+                currentRoom={room} 
+                submitForm={submitForm} 
+                logout={logout}/>
             </Box>
             <Box direction='column' fill='horizontal'>
                 <Box>
