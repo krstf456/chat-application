@@ -1,16 +1,14 @@
 import React from 'react';
 import { Box, Text } from "grommet";
-import styled from 'styled-components';
-
-
 
 const Message = ({ message: { text, session }, name }) => {
     let isSentByCurrentUser = false;
 
     const trimmedName = name.trim().toLowerCase();
-
+    console.log(session, name)
     if (session === trimmedName) {
         isSentByCurrentUser = true;
+       
     }
 
     return (

@@ -1,50 +1,46 @@
 import React, { useEffect, useState, useContext } from 'react'
-import queryString from 'query-string'
 import io from 'socket.io-client'
-import ChatBoxHeader from './ChatBox/ChatBoxHeader'
+import ChatBoxHeader from './ChatBoxHeader'
 import Input from '../Input/Input'
-
 import SideBar from './SideBar'
-import { Box, ResponsiveContext, Footer } from 'grommet'
+import { Box, ResponsiveContext, Footer, Text} from 'grommet'
 
-let socket
-const ChatPage = ({ location }) => {
 
-    const [name, setName] = useState('')
-    const [room, setRoom] = useState([])
-    const  [typing, setTyping] = useState(false) 
+const socket = io.connect('localhost:5000')
+const ChatPage = ({ user, roomName, setChat, submitForm}) => {
+    const [name, setName] = useState(user)
+    const [room, setRoom] = useState(roomName)
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
     const [users, setUsers] = useState('')
     const [userRooms, setUserRooms] = useState('')
     const [allRooms, setAllRooms] = useState([])
-    const ENDPOINT = 'localhost:5000'
+    const [typingMessage, setTypingMessage] = useState('')
 
     const size = useContext(ResponsiveContext)
     useEffect(() => {
-        const { name, room } = queryString.parse(location.search)
 
-        socket = io(ENDPOINT)
-        setName(name)
-        setRoom(room)
-
+        console.log(name, room)
         socket.emit('join', { name, room }, () => {
         })
-    }, [ENDPOINT, location.search])
+        socket.on("disconnect", () => {
+            console.log("Disconnected from server")
+        })
+
+    }, [])
+
+    // useEffect(() => {
+    //     
+    // }, []);
 
     useEffect(() => {
         socket.on('message', message => {
+            setTypingMessage('')
             setMessages(messages => [...messages, message]);
+
         });
-        // if(typing) {
-        //     socket.emit('emitTyping')
-        // }
-        socket.on("emitTyping", () => {
-            console.log()
-        } )
-        socket.on("stopTyping", () => {
-            console.log()
-        } )
+
+
         socket.on("userNames", ({ users }) => {
             setUsers(users);
         })
@@ -53,45 +49,63 @@ const ChatPage = ({ location }) => {
         })
         socket.on("allRooms", (allRooms) => {
             setAllRooms(allRooms);
-            // console.log(allRooms, 'all rooms')
+            console.log(allRooms, 'all rooms')
         })
+
+        socket.on("stop typing", (data) => {
+            console.log(data)
+            setTypingMessage('')
+        })
+
+        socket.on("typing", (typist) => {
+            if (typist !== name) {
+                setTypingMessage(`${typist} is typing`)
+            }
+        })
+
     }, [])
-
-    function joinRoom(room) {
-
-            socket.emit('join', { name, room }, () => {})
-            console.log(`joined the ${room}`)
-        
-    }
 
  
     const sendMessage = (event) => {
         event.preventDefault()
+        setTypingMessage('')
+        //handleTyping(false)
         if (message) {
-            socket.emit('sendMessage', message, () => setMessage(''))
+            socket.emit('sendMessage', message, room, () => setMessage(''))
+        }
+    }
+
+    const logout = () => {
+        socket.emit('leaveRoom')
+    }
+
+    const backToHomePage = () => {
+        setChat(false)
+        socket.emit('leaveRoom')
+    }
+
+    const handleTyping = (typing) => {
+        if (typing) {
+            socket.emit('typing', name)
+        }
+        else {
+            socket.emit('stop typing', name)
         }
     }
 
 
-    const emitTyping = () => {
-        const msg = name + "is typing.."
-        if(typing) {
-            console.log('user is typing')
-            socket.emit("emitTyping")
-        }
-        // else {
-        //     console.log('user is not typing')
+    // console.log(typing)
 
-        //     socket.emit("stopTyping")
-        // }
-    }
-    
-    //emitTyping()
     return (
-
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
             <Box style={size === 'small' ? { display: 'none' } : { display: 'block' }}>
-                <SideBar users={users} userRooms={userRooms} allRooms={allRooms} joinRoom={joinRoom} name={name} />
+                <SideBar users={users} 
+                userRooms={userRooms} 
+                allRooms={allRooms} 
+                name={name} 
+                currentRoom={room} 
+                submitForm={submitForm} 
+                logout={logout}/>
             </Box>
             <Box direction='column' fill='horizontal'>
                 <Box>
@@ -99,19 +113,15 @@ const ChatPage = ({ location }) => {
                         roomName={room}
                         messages={messages}
                         name={name}
-                        
+                        logout={backToHomePage}
                     />
                 </Box>
-                <p>{emitTyping()}</p>
+                <Text>{typingMessage}</Text>
                 <Footer justify='center'
                     alignSelf='center'>
-                    <Input 
-                     message={message}
-                     setMessage={setMessage}
-                     sendMessage={sendMessage} 
-                     setTyping={setTyping}
-                     />
-
+                    <Input message={message} setMessage={setMessage} sendMessage={sendMessage}
+                        handleTyping={handleTyping}
+                    />
                 </Footer>
             </Box>
         </Box>

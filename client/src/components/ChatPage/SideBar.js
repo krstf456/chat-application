@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Unlock, Lock, FormSubtract, FormAdd, Group, StatusGoodSmall, ChatOption, Chat} from 'grommet-icons';
-import { Accordion, AccordionPanel, Box, Heading, Text, ThemeContext } from 'grommet';
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { Unlock, Lock, FormSubtract, FormAdd, Group, StatusGoodSmall, ChatOption } from 'grommet-icons';
+import { Accordion, AccordionPanel, Box, Heading, Text, ThemeContext, Layer, Button } from 'grommet';
 import backgroundImage from '../../Assets/background.jpg'
+import DisplayLists from './DisplayLists'
+import {FormClose, StatusWarning} from "grommet-icons";
 
 const richAccordionTheme = {
     accordion: {
@@ -39,8 +40,84 @@ const RichPanel = ({ children, icon, label }) => {
     );
 };
 
-const SideBar = ({ users, userRooms, allRooms, joinRoom, name }) => {
+const SideBar = ({ users, userRooms, allRooms, submitForm, name, currentRoom, logout }) => {
+    const [proceed, setProceed] = useState(undefined);
+    const [lockedValues, setLockedValues] = useState('');
+    const [error, setError] = useState(false);
+    const onClose = () => setError(undefined);
+    const [errorMessage, setErrorMessage] = useState('')
+    const changeChat = (room) => {
+        if (room === currentRoom) {
+            console.log('same room')
+        }
+        else {
+            const values =
+                { lockedStatus: false, name: name, room: room }
+            console.log('here')
+            logout()
+            submitForm(values)
+        }
+    }
 
+    const getPassword = (room) => {
+        if (room === currentRoom) {
+            console.log('same room')
+        }
+        else {
+            const password = prompt("Please enter password", "password")
+            authenticatePassword(room, password)
+            setLockedValues({ lockedStatus: true, name: name, room: room, password: password })
+        }
+    }
+    const authenticatePassword = async (room, password) => {
+        setError(false)
+        try {
+            fetch('http://localhost:5000/switch', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    roomName: room,
+                    password: password,
+                })
+            }).then(function (response) {
+                return response.json();
+            }).then(function (parsedJson) {
+                console.log(parsedJson)
+                if (parsedJson.error) {
+                    console.log('This is the parsed json', parsedJson);
+                    setError(true);
+                    setProceed(false)
+                    setErrorMessage(parsedJson.error)
+                }
+                else {
+                    console.log('ok')
+                    console.log(name, room, 'test534')
+                    setProceed(true)
+                }
+            })
+        } catch (error) {
+            console.log(error, 'test')
+        }
+    }
+
+    useEffect(() => {
+
+        if (proceed !== undefined) {
+            if (proceed) {
+                logout()
+                submitForm(lockedValues)
+            }
+            else {
+            }
+        }
+    }, [proceed])
+
+    const lockedRooms = allRooms.filter(element => element.status === true).map(element => element.roomName)
+    const unlockedRooms = allRooms.filter(element => element.status === false).map(element => element.roomName)
+    console.log(unlockedRooms, lockedRooms)
     return (
         <Box fill direction="row">
             <Box basis="medium" border={{ side: 'right', color: 'brand', size: 'medium' }}>
@@ -66,41 +143,10 @@ const SideBar = ({ users, userRooms, allRooms, joinRoom, name }) => {
                 <ThemeContext.Extend value={richAccordionTheme}>
                     <Accordion>
                         <RichPanel icon={<Lock color="brand" />} label="Locked Rooms">
-                            <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
-                                <Box gap="xsmall">
-                                    <Text color="dark-3">
-                                        <strong>Room Names</strong>
-                                    </Text>
-                                </Box>
-                            </Box>
+                            <DisplayLists displayItem={lockedRooms} changeChat={getPassword} />
                         </RichPanel>
                         <RichPanel icon={<Unlock color="brand" />} label="Unlocked Rooms">
-                            <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
-                                <Box gap="xsmall">
-                                    <Text color="dark-3">
-                                        {
-                                            allRooms
-                                                ? (
-                                                    <Box>
-
-                                                        {
-                                                            allRooms.map((room) => (
-                                                                <Link to={`/chat?name=${name}&room=${room}`} target="_blank">
-
-                                                                <Text key={room} >
-                                                                    <StatusGoodSmall  style={{cursor: 'pointer'}} color='status-ok' size='small' />
-                                                                    <strong> {room}</strong>
-                                                                </Text>
-                                                                </Link>
-                                                            ))
-                                                        }
-                                                    </Box>
-                                                )
-                                                : null
-                                        }
-                                    </Text>
-                                </Box>
-                            </Box>
+                            <DisplayLists displayItem={unlockedRooms} changeChat={changeChat} />
                         </RichPanel>
                         <RichPanel icon={<ChatOption color="brand" />} label="Your Rooms">
                             <Box pad='small' gap="none" overflow="auto" style={{ maxHeight: '400px' }}>
@@ -142,13 +188,42 @@ const SideBar = ({ users, userRooms, allRooms, joinRoom, name }) => {
                                         )
                                         : null
                                 }
-
                             </Box>
                         </RichPanel>
                     </Accordion>
                 </ThemeContext.Extend>
             </Box>
+            {error && (
+                <Layer
+                    position="bottom"
+                    modal={false}
+                    margin={{ vertical: "medium", horizontal: "small" }}
+                    onEsc={onClose}
+                    onClickOutside={onClose}
+                    responsive={false}
+                    plain
+                >
+                    <Box
+                        align="center"
+                        direction="row"
+                        gap="small"
+                        justify="between"
+                        round="medium"
+                        elevation="medium"
+                        pad={{ vertical: "xsmall", horizontal: "small" }}
+                        background="status-warning"
+                    >
+                        <Box align="center" direction="row" gap="xsmall">
+                            <StatusWarning />
+                            <Text>{errorMessage}</Text>
+                        </Box>
+                        <Button icon={<FormClose />} onClick={onClose} plain />
+                    </Box>
+                </Layer>
+            )}
+
         </Box>
+
     );
 };
 
