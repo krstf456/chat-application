@@ -5,7 +5,9 @@ const addRoom = ({ id, name, room}) => {
     room = room.trim().toLowerCase()
 
     const room = { id, name, room }
+
     rooms.push(room)
+
     return { room }
 }
 
@@ -14,7 +16,11 @@ const removeRoom = (id) => {
     if (index !== -1) {
         rooms.splice(index, 1)[0]
     }
+
 }
+
+// const getUser = (id) => users.find((user) => user.id === id)
+
 
 const getRoomsForUser = (id) => rooms.filter((room) => user.name === name)
 

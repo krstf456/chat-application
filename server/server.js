@@ -21,6 +21,7 @@ const { addSession, removeSession, getSession, getUsersInRoom, getRoomsWithUser,
 
 //Delay server from restarting
 io.eio.pingTimeout = 120000; // 2 minutes
+// io.eio.pingInterval = 5000;  // 5 seconds
 
 app.use(cors());
 app.use(express.json())
@@ -78,6 +79,7 @@ app.post('/switch', async (req, res) => {
         return res.status(200).json('Enter room success')
     }
 })
+
 
 app.use(cors());
 app.use(express.json())
@@ -142,7 +144,9 @@ io.on('connection', (socket) => {
         socket.join(session.room)
         console.log(io.sockets.adapter.rooms, 'checkpoint')
         console.log(Object.keys(socket.rooms), 'checkpoint-2')
+        // console.log(io.sockets.adapter.rooms['1'], 'checkpoint-3')
         const rooms = roomParameters.map(element => { const room = { roomName: element.roomName, status: element.status }; return room })
+        // console.log(rooms, 'all rooms')
         sessions.forEach(element => {
             io.sockets.connected[element.id].emit('allRooms', rooms)
         });
@@ -174,6 +178,7 @@ io.on('connection', (socket) => {
                 socket.leave(session.room)
             }
         }
+
     }
     
     // when the client leaves, broadcast it to others
@@ -184,6 +189,27 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('disconnect')
         handleUserExit(socket.id)
+
+        // console.log(`User has left`)
+        // const [session, roomParameters] = removeSession(socket.id);
+
+        // if (session !== undefined) {
+        //     console.log(session, roomParameters, 'cp-6')
+
+        //     const rooms = roomParameters.map(element => { const room = { roomName: element.roomName, status: element.status }; return room })
+        //     if (session) {
+        //         console.log(session.name, 'has left')
+
+        //         socket.broadcast.to(session.room).emit('message', { session: 'admin', text: `${session.name} has left` })
+        //         io.to(session.room).emit('userNames', { room: session.room, users: getUsersInRoom(session.room) });
+        //         sessions.forEach(element => {
+        //             io.sockets.connected[element.id].emit('allRooms', rooms)
+        //         });
+        //         updateSessions(session)
+        //         socket.leave(session.room)
+        //     }
+
+        // }
     })
 
     // when the client emits 'typing', we broadcast it to others
@@ -191,6 +217,7 @@ io.on('connection', (socket) => {
         const session = getSession(socket.id)
         io.to(session.room).emit('typing', name)
     });
+
 
     // when the client emits 'stop typing', we broadcast it to others
     socket.on('stop typing', (name) => {
@@ -201,3 +228,4 @@ io.on('connection', (socket) => {
 
 app.use(router)
 server.listen(port, () => console.log(`Server is listening on ${port}`))
+

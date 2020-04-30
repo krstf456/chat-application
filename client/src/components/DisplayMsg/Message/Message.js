@@ -29,12 +29,14 @@ const Message = ({ message: { text, session }, name }) => {
                         <Text style={{width: '20%',fontSize: '1.1em', wordWrap: 'break-word'}}>{text}</Text>
                     </Box>
                 </Box>
+          
             )
             : (
                 <Box
                 direction='row'
                 background='light'
                 width='100%'
+                
                 style={{ padding: '0 5%', marginTop: '3px'}}
                 alignSelf='center'>
                     <Box round='small'
@@ -47,6 +49,7 @@ const Message = ({ message: { text, session }, name }) => {
                     <Text style={{width: '20%',fontSize: '1.1em', marginTop: '7px', paddingLeft: '10px'}}>{session}</Text>
                 </Box>
             )
+
     )
 }
 
