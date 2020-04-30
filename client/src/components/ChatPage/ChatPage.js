@@ -19,19 +19,13 @@ const ChatPage = ({ user, roomName, setChat, submitForm}) => {
 
     const size = useContext(ResponsiveContext)
     useEffect(() => {
-
         console.log(name, room)
         socket.emit('join', { name, room }, () => {
         })
         socket.on("disconnect", () => {
             console.log("Disconnected from server")
         })
-
     }, [])
-
-    // useEffect(() => {
-    //     
-    // }, []);
 
     useEffect(() => {
         socket.on('message', message => {
@@ -40,13 +34,14 @@ const ChatPage = ({ user, roomName, setChat, submitForm}) => {
 
         });
 
-
         socket.on("userNames", ({ users }) => {
             setUsers(users);
         })
+
         socket.on("userRooms", ({ userRooms }) => {
             setUserRooms(userRooms);
         })
+
         socket.on("allRooms", (allRooms) => {
             setAllRooms(allRooms);
             console.log(allRooms, 'all rooms')
@@ -62,10 +57,8 @@ const ChatPage = ({ user, roomName, setChat, submitForm}) => {
                 setTypingMessage(`${typist} is typing..`)
             }
         })
-
     }, [])
 
- 
     const sendMessage = (event) => {
         event.preventDefault()
         setTypingMessage('')
@@ -93,9 +86,7 @@ const ChatPage = ({ user, roomName, setChat, submitForm}) => {
         }
     }
 
-
     // console.log(typing)
-
     return (
         <Box direction='row' fill='horizontal' height='100vh' gap='none' >
             <Box style={size === 'small' ? { display: 'none' } : { display: 'block' }}>
@@ -120,9 +111,7 @@ const ChatPage = ({ user, roomName, setChat, submitForm}) => {
                 alignSelf='center'
                 background="linear-gradient(102.77deg, #F2F2F2 -9.18%, #999999 209.09%)"
                 round='small'
-                
                 style={{padding: '0 5px'}}
-
                 >
                 {typingMessage}
                 </Box>
