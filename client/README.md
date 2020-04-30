@@ -1,10 +1,8 @@
-## Chatify
-A simple chat application.
-Backed-end built using [socket.io](https://socket.io/),[nodeJS](https://nodejs.org/en/),[express](https://expressjs.com/)
-Front-end built using [Create React App](https://github.com/facebook/create-react-app) and [Grommet](https://v2.grommet.io/) 
+## Information Front-End
+This Readme here includes information about our client-side.
 
-## Intallation
-You need to install dependencies in both the client and the server files.
-(cd.. client `npm i` cd.. server `npm i`)
-Then in both, you can run:
-### `npm start`
+## Install dependencies
+In our Front-End we used [Create React App](https://github.com/facebook/create-react-app), [Grommet](https://v2.grommet.io/) and Socket.IO Client. You can install all of these by using npm i inside the Client folder. You can navigate to the client folder by using cd client.
+
+## How to run the app for our Front-End
+When you are inside the Client folder run npm start, it will start the Front-End for our chat application
