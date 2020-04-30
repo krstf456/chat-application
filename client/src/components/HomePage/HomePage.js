@@ -13,7 +13,6 @@ const HomePage = () => {
     const [update, setUpdate] = useState(false);
     const onClose = () => setError(undefined);
     const [errorMessage, setErrorMessage] = useState('')
-
     const submitForm = (value) => {
         console.log(value)
         authentication(value.room, value.password, value.lockedStatus)
@@ -58,13 +57,10 @@ const HomePage = () => {
         }
     }
 
-
-
     const displayPage = () => {
         let displayPage = <LoginPage submitForm={submitForm} showError={error} />
         if (chat) {
             displayPage = <ChatPage user={name} roomName={room} setChat={setChat} submitForm={submitForm} />
-
         }
         return displayPage
     }
